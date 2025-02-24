@@ -2,17 +2,14 @@
 #include <stdio.h>
 
 int main() {
-    printf("Starting program...\n");
-
-    InitWindow(800, 600, "Hello Raylib!");
-    while (!WindowShouldClose()) {
+    Color darkgrey = {26, 31, 40, 255};
+    InitWindow(600, 800, "Tetris MAAMAT");
+    SetTargetFPS(60);
+    while(WindowShouldClose() == false){
         BeginDrawing();
-        ClearBackground(RAYWHITE);
-        DrawText("Hello, Raylib!", 300, 280, 20, DARKGRAY);
-        EndDrawing();
+        ClearBackground(darkgrey);
+        EndDrawing(); 
     }
     CloseWindow();
-
-    printf("Program exited successfully.\n");
-    return 0;
+return 0;
 }
