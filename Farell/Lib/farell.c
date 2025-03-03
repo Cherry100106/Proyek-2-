@@ -1,4 +1,4 @@
-#include "movement.h"
+#include "farell.h"
 
 void moveLeft(Block *b) {
     if (b->x > 0) {  
@@ -8,7 +8,7 @@ void moveLeft(Block *b) {
 
 void moveRight(Block *b) {
     if (b->x < GRID_WIDTH - 4) {  
-        b->x++;
+        b->x++; 
     }
 }
 
