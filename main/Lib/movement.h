@@ -13,5 +13,6 @@ typedef struct {
 void moveLeft(Block *b);
 void moveRight(Block *b);
 void moveDown(Block *b);
+void rotateBlock(Block *b);
 
 #endif
