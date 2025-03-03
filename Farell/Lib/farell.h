@@ -1,5 +1,5 @@
-#ifndef MOVEMENT_H
-#define MOVEMENT_H
+#ifndef FARELL_H
+#define FARELL_H
 
 #define BLOCK_SIZE 30
 #define GRID_WIDTH 10
