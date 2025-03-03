@@ -24,6 +24,7 @@ int main() {
         if (IsKeyPressed(KEY_RIGHT)) moveRight(&b);
         if (IsKeyPressed(KEY_LEFT)) moveLeft(&b);
         if (IsKeyPressed(KEY_DOWN)) moveDown(&b);
+        if (IsKeyPressed(KEY_UP)) rotateBlock(&b);
 
         if (GetTime() - lastDropTime >= dropInterval) {
             moveDown(&b);
