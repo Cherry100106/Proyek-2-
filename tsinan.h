@@ -14,7 +14,6 @@ typedef struct {
     int pivotX, pivotY; // Titik poros rotasi
 } Block;
 
-Block createBlock();
 void rotateBlock(Block *b);
 void moveBlockLeft(Block *b);
 void moveBlockRight(Block *b);
