@@ -48,7 +48,7 @@ int ClearRows(Grid *grid) {
             for (int col = 0; col < NUM_COLS; col++) {
                 grid->grid[0][col] = 0;
             }
-            row++; // Periksa ulang baris yang sama setelah penghapusan
+            row++;
         }
     }
     return score;

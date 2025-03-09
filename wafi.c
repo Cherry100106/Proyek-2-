@@ -1,6 +1,6 @@
 #include "wafi.h"
-#include <stdlib.h> // Untuk rand()
-#include <time.h>   // Untuk time()
+#include <stdlib.h> 
+#include <time.h>   
 
 void Position_Init(Position *pos, int row, int column) {
     pos->row = row;
@@ -8,7 +8,7 @@ void Position_Init(Position *pos, int row, int column) {
 }
 
 void Block_Init(Block *block) {
-    block->id = rand() % 7; // Acak antara 0-6 untuk 7 jenis blok
+    block->id = rand() % 7; 
     block->cellSize = 30;
     block->rotationState = 0;
 
@@ -211,7 +211,7 @@ void Block_Draw(Block *block, int offsetX, int offsetY) {
             offsetX + col * block->cellSize,
             offsetY + row * block->cellSize,
             block->cellSize, block->cellSize,
-            block->colors[block->id % 7] // Gunakan 7 warna yang sudah didefinisikan
+            block->colors[block->id % 7]
         );
 
         DrawRectangleLines(
@@ -236,7 +236,6 @@ void Grid_Draw(Grid *grid) {
     for (int i = 0; i < NUM_ROWS; i++) {
         for (int j = 0; j < NUM_COLS; j++) {
             if (grid->grid[i][j]) {
-                // Gambar blok yang sudah mendarat
                 DrawRectangle(
                     j * grid->cellSize,
                     i * grid->cellSize,
