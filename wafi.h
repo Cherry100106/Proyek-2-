@@ -30,6 +30,6 @@ void Block_Init(Block *block);
 void Block_Draw(Block *block, int offsetX, int offsetY);
 void Grid_Init(Grid *grid);
 void Grid_Print(Grid *grid);
-void Grid_Draw(Grid *grid);
+void Grid_Draw(Grid *grid, int offsetX, int offsetY);
 
 #endif

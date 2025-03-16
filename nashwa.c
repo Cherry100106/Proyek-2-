@@ -16,7 +16,7 @@ void PlaceTetromino(Block *block, Grid *grid) {
         int row = block->cells[block->rotationState][i].row;
         int col = block->cells[block->rotationState][i].column;
         if (row >= 0 && row < NUM_ROWS && col >= 0 && col < NUM_COLS) {
-            grid->grid[row][col] = block->id + 1; // Simpan ID blok ke grid
+            grid->grid[row][col] = block->id + 1;
         }
     }
 }
