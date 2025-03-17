@@ -1,14 +1,16 @@
 #include "wafi.h"
 #include "farell.h"
 #include "nashwa.h"
+#include <stdlib.h>
+#include <time.h>
 
 int main() {
     const int screenWidth = 550;
     const int screenHeight = 650;
     InitWindow(screenWidth, screenHeight, "Tetris Kelompok 1A");
-
+    srand(time(NULL));
     Texture2D background = LoadTexture("Assets/Background.png");
-    Texture2D frameTexture = LoadTexture("Assets/frame.png");
+    Texture2D frameTexture = LoadTexture("Assets/Background2.png");
     Texture2D papanScore = LoadTexture("Assets/Papanscore.png");
     InitAudioDevice();
     Music music = LoadMusicStream("Assets/Backsound_Korobeiniki_SonyaBelousova.wav"); 
@@ -21,7 +23,12 @@ int main() {
     Grid_Init(&grid);
 
     Block currentBlock;
+    Block nextBlocks[3];
     Block_Init(&currentBlock);
+    for (int i = 0; i < 3; i++) {
+        Block_Init(&nextBlocks[i]);
+    }
+    
 
     SetTargetFPS(60);
 
@@ -50,9 +57,15 @@ int main() {
             int rowCleared = ClearRows(&grid);
             score += rowCleared;
             if (rowCleared > 0) {
+                int baseScore = rowCleared * 100;
                 PlaySound(clearSound);
             }
-            Block_Init(&currentBlock); // Spawn blok baru
+            currentBlock = nextBlocks [0];
+            for (int i = 0; i < 2; i++){
+                nextBlocks[i] = nextBlocks[i+1];
+            }
+
+            Block_Init(&nextBlocks[2]); // Spawn blok baru
             if (CheckGameOver(&grid)) break;
         }
 
@@ -65,8 +78,10 @@ int main() {
             DrawTexture(papanScore, 365, 100, WHITE);
             Grid_Draw(&grid,30,30);
             Block_Draw(&currentBlock, 30, 30);
-            DrawText(TextFormat("SCORE"), 395, 50, 40, WHITE);
-            DrawText(TextFormat("%d",score), 445, 110, 30, WHITE);
+            DrawNextBlocks(nextBlocks,320,290);
+            DrawText(TextFormat("SCORE"), 390, 50, 40, WHITE);
+            DrawText(TextFormat("%d",score), 440, 110, 30, WHITE);
+            DrawText(TextFormat("Next Block"),375, 200, 30, WHITE);
         EndDrawing();
     }
 

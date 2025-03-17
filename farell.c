@@ -37,7 +37,6 @@ void rotateBlock(Block *block, Grid *grid) {
     int nextRotation = (block->rotationState + 1) % 4;
     int pivotRow = block->cells[block->rotationState][0].row;
     int pivotCol = block->cells[block->rotationState][0].column;
-    int pivotIndex = 1;
 
     Position tempCells[4];
     for (int i = 0; i < 4; i++) {
@@ -48,7 +47,6 @@ void rotateBlock(Block *block, Grid *grid) {
     int offsetRow = pivotRow - tempCells[0].row;
     int offsetCol = pivotCol - tempCells[0].column;
 
-    // Cek apakah rotasi memungkinkan
     bool canRotate = true;
     for (int i = 0; i < 4; i++) {
         int row = tempCells[i].row + offsetRow;
@@ -58,47 +56,11 @@ void rotateBlock(Block *block, Grid *grid) {
             break;
         }
     }
-
-    // Jika rotasi tidak memungkinkan, coba geser blok ke kiri atau kanan
-    if (!canRotate) {
-        // Coba geser ke kiri
-        bool canShiftLeft = true;
+    if (canRotate) {
+        block->rotationState = nextRotation;
         for (int i = 0; i < 4; i++) {
-            int row = tempCells[i].row + offsetRow;
-            int col = tempCells[i].column + offsetCol - 1; // Geser ke kiri
-            if (row < 0 || row >= NUM_ROWS || col < 0 || col >= NUM_COLS || grid->grid[row][col]) {
-                canShiftLeft = false;
-                break;
-            }
-        }
-
-        if (canShiftLeft) {
-            offsetCol--; // Geser ke kiri
-            canRotate = true;
-        } else {
-            // Coba geser ke kanan
-            bool canShiftRight = true;
-            for (int i = 0; i < 4; i++) {
-                int row = tempCells[i].row + offsetRow;
-                int col = tempCells[i].column + offsetCol + 1; // Geser ke kanan
-                if (row < 0 || row >= NUM_ROWS || col < 0 || col >= NUM_COLS || grid->grid[row][col]) {
-                    canShiftRight = false;
-                    break;
-                }
-            }
-
-            if (canShiftRight) {
-                offsetCol++; // Geser ke kanan
-                canRotate = true;
-            }
-        }
-    }
-
-    if(canRotate){
-    block->rotationState = nextRotation;
-    for (int i = 0; i < 4; i++) {
-        block->cells[block->rotationState][i].row = tempCells[i].row + offsetRow;
-        block->cells[block->rotationState][i].column = tempCells[i].column + offsetCol;
+            block->cells[block->rotationState][i].row = tempCells[i].row + offsetRow;
+            block->cells[block->rotationState][i].column = tempCells[i].column + offsetCol;
         }
     }
 }
@@ -123,6 +85,29 @@ void skipBawah(Block *block, Grid *grid){
             }
         } else {
             break;
+        }
+    }
+}
+
+void DrawNextBlocks(Block nextBlocks[], int offsetX, int offsetY) {
+    for (int i = 0; i < 3; i++) {
+        for (int j = 0; j < 4; j++) {
+            int row = nextBlocks[i].cells[nextBlocks[i].rotationState][j].row;
+            int col = nextBlocks[i].cells[nextBlocks[i].rotationState][j].column;
+
+            DrawRectangle(
+                offsetX + col * nextBlocks[i].cellSize,
+                offsetY + (i * 4 + row) * nextBlocks[i].cellSize,
+                nextBlocks[i].cellSize, nextBlocks[i].cellSize,
+                nextBlocks[i].colors[nextBlocks[i].id % 7]
+            );
+
+            DrawRectangleLines(
+                offsetX + col * nextBlocks[i].cellSize,
+                offsetY + (i * 4 + row) * nextBlocks[i].cellSize,
+                nextBlocks[i].cellSize, nextBlocks[i].cellSize,
+                BLACK
+            );
         }
     }
 }
