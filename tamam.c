@@ -75,11 +75,11 @@ void HandleMenuInput() {
 }
 
 void HandleSettingsInput() {
-    if (IsKeyDown(KEY_RIGHT)) volume += 0.06f;
+    if (IsKeyDown(KEY_RIGHT)) volume += 0.06f; // kalau kurang berasa volume, gantinya disini
     if (IsKeyDown(KEY_LEFT)) volume -= 0.06f;
     if (IsKeyPressed(KEY_W) || IsKeyPressed(KEY_ESCAPE)) currentScreen = MENU;
 
-    if (volume > 1.0f) volume = 1.0f;
+    if (volume > 1.0f) volume = 1.0f; // ini buat maksimalnya, bisa edit disini
     if (volume < 0.0f) volume = 0.0f;
 
     SetMusicVolume(bgm, volume);
