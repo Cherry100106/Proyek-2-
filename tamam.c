@@ -4,7 +4,7 @@ GameState currentScreen = MENU;
 int selectedOption = 0;
 float volume = 0.5f;
 Music bgm;
-Texture2D background;  // Background image
+Texture2D background; 
 
 const char *menuOptions[] = {
     "Play",
@@ -24,16 +24,15 @@ void UnloadAudioResources() {
 }
 
 void InitBackground() {
-    background = LoadTexture("Assets/preview.jpg");  // Pastikan file gambar tersedia
-}
+    background = LoadTexture("Assets/Lobby.jpg");
 
 void UnloadBackground() {
     UnloadTexture(background);
 }
 
 void DrawBackground() {
-    Rectangle source = { 0, 0, background.width, background.height };  // Gambar asli
-    Rectangle dest = { 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT };  // Ukuran yang diinginkan
+    Rectangle source = { 0, 0, background.width, background.height };  
+    Rectangle dest = { 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT };  
     Vector2 origin = { 0, 0 };
 
     DrawTexturePro(background, source, dest, origin, 0.0f, WHITE);
