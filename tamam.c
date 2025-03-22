@@ -14,7 +14,7 @@ const char *menuOptions[] = {
 const int totalOptions = 3;
 
 void InitAudioResources() {
-    bgm = LoadMusicStream("Assets/Backsound_Korobeiniki_SonyaBelousova.wav");
+    bgm = LoadMusicStream("Assets/Nahidatheme.wav");
     PlayMusicStream(bgm);
     SetMusicVolume(bgm, volume);
 }
@@ -25,14 +25,18 @@ void UnloadAudioResources() {
 
 void InitBackground() {
     background = LoadTexture("Assets/Lobby.jpg");
-
+}
 void UnloadBackground() {
     UnloadTexture(background);
 }
 
 void DrawBackground() {
-    Rectangle source = { 0, 0, background.width, background.height };  
-    Rectangle dest = { 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT };  
+    float scaleX = (float)SCREEN_WIDTH / background.width;
+    float scaleY = (float)SCREEN_HEIGHT / background.height;
+    float scale = (scaleX > scaleY) ? scaleX : scaleY; 
+
+    Rectangle source = { 0, 0, background.width, background.height };
+    Rectangle dest = { 0, 0, background.width * scale, background.height * scale };
     Vector2 origin = { 0, 0 };
 
     DrawTexturePro(background, source, dest, origin, 0.0f, WHITE);

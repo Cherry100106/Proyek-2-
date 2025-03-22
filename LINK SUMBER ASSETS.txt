@@ -4,5 +4,7 @@ LINK SUMBER ASSETS
 	Link :https://freesound.org/people/elBaygo/sounds/789204/
 2.Sound Balok hancur
 	Link :https://freesound.org/people/grunz/sounds/109662/
-3.Background 2
+3.Background
 	Link :https://id.pinterest.com/pin/291537775877449962/
+4.Background screen
+	Link :https://www.freepik.com/free-vector/tetris-colorful-pattern_799907.htm
