@@ -1,8 +1,7 @@
-// tsinan.c
 #include "tsinan.h"
 #include <stdio.h>
 
-// Load high score from file
+// Menampilkan Highscore
 void loadHighScore(int *highScore) {
     FILE *file = fopen(HIGHSCORE_FILE, "r");
     if (file) {
@@ -13,7 +12,7 @@ void loadHighScore(int *highScore) {
     }
 }
 
-// Save new high score to file
+// Save highscore baru
 void saveHighScore(int score) {
     int highScore;
     loadHighScore(&highScore);
@@ -25,4 +24,17 @@ void saveHighScore(int score) {
             fclose(file);
         }
     }
+}
+
+// Mendapatkan highscore terbaru untuk ditampilkan
+int getHighScore() {
+    int highScore;
+    loadHighScore(&highScore);
+    return highScore;
+}
+
+// Display highscore
+void displayHighScore(int offsetX, int offsetY) {
+    int highScore = getHighScore();
+    DrawText(TextFormat("High Score: %d", highScore), offsetX, offsetY, 20, WHITE);
 }
