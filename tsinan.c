@@ -1,44 +1,39 @@
-#include <stdio.h>
 #include "tsinan.h"
+#include <stdio.h>
 
-static int currentScore = 0;  // Menyimpan score sementara
+static int score = 0;
+static int highScore = 0;
+const char *highScoreFile = "highscore.txt";
 
-// Menambah score pemain
-void addScore(int points) {
-    currentScore += points;
+void initScore() {
+    score = 0;
+    loadHighScore();
 }
 
-// Mengambil high score dari file
-int getHighScore() {
-    int highScore = 0;
-    FILE *file = fopen("highscore.txt", "r");
-
-    if (file != NULL) {
-        fscanf(file, "%d", &highScore);
-        fclose(file);
-    }
-    return highScore;
+void addScore(int linesCleared) {
+    int points[] = {0, 40, 100, 300, 1200};
+    score += points[linesCleared];
 }
 
-// Menyimpan high score ke file
-void saveHighScore(int score) {
-    int highScore = getHighScore();
-
+void saveHighScore() {
     if (score > highScore) {
-        FILE *file = fopen("highscore.txt", "w");
-        if (file != NULL) {
-            fprintf(file, "%d", score);
+        highScore = score;
+        FILE *file = fopen(highScoreFile, "w");
+        if (file) {
+            fprintf(file, "%d", highScore);
             fclose(file);
         }
     }
 }
 
-// Mengambil score saat ini
-int getCurrentScore() {
-    return currentScore;
+void loadHighScore() {
+    FILE *file = fopen(highScoreFile, "r");
+    if (file) {
+        fscanf(file, "%d", &highScore);
+        fclose(file);
+    }
 }
 
-// Reset score ke 0
-void resetScore() {
-    currentScore = 0;
+int getScore() {
+    return score;
 }
