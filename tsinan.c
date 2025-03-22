@@ -1,39 +1,28 @@
+// tsinan.c
 #include "tsinan.h"
 #include <stdio.h>
 
-static int score = 0;
-static int highScore = 0;
-const char *highScoreFile = "highscore.txt";
-
-void initScore() {
-    score = 0;
-    loadHighScore();
+// Load high score from file
+void loadHighScore(int *highScore) {
+    FILE *file = fopen(HIGHSCORE_FILE, "r");
+    if (file) {
+        fscanf(file, "%d", highScore);
+        fclose(file);
+    } else {
+        *highScore = 0; // Default high score jika file tidak ditemukan
+    }
 }
 
-void addScore(int linesCleared) {
-    int points[] = {0, 40, 100, 300, 1200};
-    score += points[linesCleared];
-}
-
-void saveHighScore() {
+// Save new high score to file
+void saveHighScore(int score) {
+    int highScore;
+    loadHighScore(&highScore);
+    
     if (score > highScore) {
-        highScore = score;
-        FILE *file = fopen(highScoreFile, "w");
+        FILE *file = fopen(HIGHSCORE_FILE, "w");
         if (file) {
-            fprintf(file, "%d", highScore);
+            fprintf(file, "%d", score);
             fclose(file);
         }
     }
-}
-
-void loadHighScore() {
-    FILE *file = fopen(highScoreFile, "r");
-    if (file) {
-        fscanf(file, "%d", &highScore);
-        fclose(file);
-    }
-}
-
-int getScore() {
-    return score;
 }
