@@ -7,21 +7,38 @@ void Position_Init(Position *pos, int row, int column) {
     pos->column = column;
 }
 
+int startX = NUM_COLS / 2 - 2;
+int startY = 0;
+
 void Block_Init(Block *block) {
     block->id = rand() % 7; 
     block->cellSize = 30;
     block->rotationState = 0;
-
-    // Warna blok
-    block->colors[0] = RED;    // I
-    block->colors[1] = ORANGE; // L
-    block->colors[2] = YELLOW; // O
-    block->colors[3] = GREEN;  // S
-    block->colors[4] = BLUE;   // J
-    block->colors[5] = PURPLE; // T
-    block->colors[6] = PINK;   // Z
-    int startX = NUM_COLS / 2 - 2;
-    int startY = 0;                
+               
+    switch (block->id) {
+        case 0: // I
+            block->texture = LoadTexture("Assets/Block_I.png");
+            break;
+        case 1: // L
+            block->texture = LoadTexture("Assets/Block_L.png");
+            break;
+        case 2: // J
+            block->texture = LoadTexture("Assets/Block_J.png");
+            break;
+        case 3: // O
+            block->texture = LoadTexture("Assets/Block_O.png");
+            break;
+        case 4: // S
+            block->texture = LoadTexture("Assets/Block_S.png");
+            break;
+        case 5: // T
+            block->texture = LoadTexture("Assets/Block_T.png");
+            break;
+        case 6: // Z
+            block->texture = LoadTexture("Assets/Block_Z.png");
+            break;
+    }
+   
 
     // Inisialisasi bentuk blok berdasarkan ID
     switch (block->id) {
@@ -197,16 +214,17 @@ void Block_Init(Block *block) {
         }
 }
 
+
 void Block_Draw(Block *block, int offsetX, int offsetY) {
     for (int i = 0; i < 4; i++) {
         int row = block->cells[block->rotationState][i].row;
         int col = block->cells[block->rotationState][i].column;
 
-        DrawRectangle(
+        DrawTexture(
+            block->texture,
             offsetX + col * block->cellSize,
             offsetY + row * block->cellSize,
-            block->cellSize, block->cellSize,
-            block->colors[block->id % 7]
+            WHITE
         );
 
         DrawRectangleLines(
@@ -216,6 +234,16 @@ void Block_Draw(Block *block, int offsetX, int offsetY) {
             BLACK
         );
     }
+}
+
+void LoadGridTextures(Grid *grid) {
+    grid->blockTextures[0] = LoadTexture("Assets/Block_I.png");
+    grid->blockTextures[1] = LoadTexture("Assets/Block_L.png");
+    grid->blockTextures[2] = LoadTexture("Assets/Block_J.png");
+    grid->blockTextures[3] = LoadTexture("Assets/Block_O.png");
+    grid->blockTextures[4] = LoadTexture("Assets/Block_S.png");
+    grid->blockTextures[5] = LoadTexture("Assets/Block_T.png");
+    grid->blockTextures[6] = LoadTexture("Assets/Block_Z.png");
 }
 
 void Grid_Init(Grid *grid) {
@@ -231,24 +259,14 @@ void Grid_Draw(Grid *grid,int offsetX,int offsetY) {
     for (int i = 0; i < NUM_ROWS; i++) {
         for (int j = 0; j < NUM_COLS; j++) {
             if (grid->grid[i][j]) {
-                Color blockColor;
-                switch (grid->grid[i][j] - 1) { 
-                    case 0: blockColor = RED; break;    
-                    case 1: blockColor = ORANGE; break; 
-                    case 2: blockColor = YELLOW; break; 
-                    case 3: blockColor = GREEN; break;  
-                    case 4: blockColor = BLUE; break;   
-                    case 5: blockColor = PURPLE; break; 
-                    case 6: blockColor = PINK; break;   
-                    };
-
-                DrawRectangle(
+                int blockId = grid->grid[i][j] - 1; // ID blok disimpan di grid
+                DrawTexture(
+                    grid->blockTextures[blockId],
                     offsetX + j * grid->cellSize,
                     offsetY + i * grid->cellSize,
-                    grid->cellSize, grid->cellSize,
-                    blockColor
+                    WHITE
                 );
-
+                
                 DrawRectangleLines(
                     offsetX + j * grid->cellSize,
                     offsetY + i * grid->cellSize,

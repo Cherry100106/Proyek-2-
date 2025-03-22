@@ -10,8 +10,8 @@ int main() {
     InitWindow(screenWidth, screenHeight, "Tetris Kelompok 1A");
     srand(time(NULL));
     Texture2D background = LoadTexture("Assets/Background.png");
-    Texture2D frameTexture = LoadTexture("Assets/Background2.png");
-    Texture2D papanScore = LoadTexture("Assets/Papanscore.png");
+    Texture2D frameTexture = LoadTexture("Assets/Frame10.png");
+    Texture2D papanScore = LoadTexture("Assets/papanScore1.png");
     InitAudioDevice();
     Music music = LoadMusicStream("Assets/Backsound_Korobeiniki_SonyaBelousova.wav"); 
     PlayMusicStream(music);
@@ -21,6 +21,7 @@ int main() {
 
     Grid grid;
     Grid_Init(&grid);
+    LoadGridTextures(&grid);
 
     Block currentBlock;
     Block nextBlocks[3];
@@ -35,9 +36,14 @@ int main() {
     int gravityCounter = 0;
     const int gravityDelay = 30;
     int score = 0;
+    bool paused = false;
 
     while (!WindowShouldClose()) {
+        if (IsKeyPressed(KEY_P)){
+            paused =!paused;
+        }
 
+        if(!paused){
         UpdateMusicStream(music);
         gravityCounter++;
         if (gravityCounter >= gravityDelay) {
@@ -68,7 +74,7 @@ int main() {
             Block_Init(&nextBlocks[2]); // Spawn blok baru
             if (CheckGameOver(&grid)) break;
         }
-
+    }
         // Merender tetris
         BeginDrawing();
             ClearBackground(RAYWHITE);
@@ -76,18 +82,26 @@ int main() {
             DrawTexture(background,360,0, WHITE);
             DrawTexture(frameTexture,0,0, WHITE);
             DrawTexture(papanScore, 365, 100, WHITE);
+            DrawGhostPiece(&currentBlock, &grid, 30, 30);
             Grid_Draw(&grid,30,30);
             Block_Draw(&currentBlock, 30, 30);
             DrawNextBlocks(nextBlocks,320,290);
             DrawText(TextFormat("SCORE"), 390, 50, 40, WHITE);
             DrawText(TextFormat("%d",score), 440, 110, 30, WHITE);
             DrawText(TextFormat("Next Block"),375, 200, 30, WHITE);
+            if(paused){
+                DrawText("PAUSED", screenWidth / 2 - 175, screenHeight / 2 - 20, 40, WHITE );
+            }
         EndDrawing();
     }
 
     UnloadSound(clearSound);
     UnloadMusicStream(music);
     CloseAudioDevice();
+    UnloadTexture(currentBlock.texture);
+    for (int i = 0; i < 3; i++) {
+    UnloadTexture(nextBlocks[i].texture);
+    }
     UnloadTexture(frameTexture);
     UnloadTexture(background);
     UnloadTexture(papanScore);

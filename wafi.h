@@ -16,13 +16,13 @@ typedef struct {
     Position cells[4][4]; // 4 rotasi, masing-masing dengan 4 posisi
     int cellSize;
     int rotationState;
-    Color colors[8];
+    Texture2D texture;
 } Block;
 
 typedef struct {
     int grid[NUM_ROWS][NUM_COLS];
     int cellSize;
-    Color colors[8];
+    Texture2D blockTextures[7];
 } Grid;
 
 void Position_Init(Position *pos, int row, int column);
@@ -31,5 +31,6 @@ void Block_Draw(Block *block, int offsetX, int offsetY);
 void Grid_Init(Grid *grid);
 void Grid_Print(Grid *grid);
 void Grid_Draw(Grid *grid, int offsetX, int offsetY);
+void LoadGridTextures(Grid *grid);
 
 #endif

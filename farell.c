@@ -1,5 +1,7 @@
 #include "farell.h"
+#include "nashwa.h"
 
+// fungsi gerak blok kiri
 void moveLeft(Block *block, Grid *grid) {
     for (int i = 0; i < 4; i++) {
         int newCol = block->cells[block->rotationState][i].column - 1;
@@ -11,6 +13,7 @@ void moveLeft(Block *block, Grid *grid) {
     }
 }
 
+// fungsi gerak blok kanan
 void moveRight(Block *block, Grid *grid) {
     for (int i = 0; i < 4; i++) {
         int newCol = block->cells[block->rotationState][i].column + 1;
@@ -22,6 +25,7 @@ void moveRight(Block *block, Grid *grid) {
     }
 }
 
+//fungsi gerak blok bawah (agak dipercepat)
 void moveDown(Block *block, Grid *grid) {
     for (int i = 0; i < 4; i++) {
         int newRow = block->cells[block->rotationState][i].row + 1;
@@ -33,6 +37,7 @@ void moveDown(Block *block, Grid *grid) {
     }
 }
 
+//fungsi rotasi blok
 void rotateBlock(Block *block, Grid *grid) {
     int nextRotation = (block->rotationState + 1) % 4;
     int pivotRow = block->cells[block->rotationState][0].row;
@@ -65,6 +70,7 @@ void rotateBlock(Block *block, Grid *grid) {
     }
 }
 
+//fungsi untuk langsung kebawah
 void skipBawah(Block *block, Grid *grid){
     int i;
     int newRow;
@@ -89,17 +95,18 @@ void skipBawah(Block *block, Grid *grid){
     }
 }
 
+//fungsi menambahkan next blok
 void DrawNextBlocks(Block nextBlocks[], int offsetX, int offsetY) {
     for (int i = 0; i < 3; i++) {
         for (int j = 0; j < 4; j++) {
             int row = nextBlocks[i].cells[nextBlocks[i].rotationState][j].row;
             int col = nextBlocks[i].cells[nextBlocks[i].rotationState][j].column;
 
-            DrawRectangle(
+            DrawTexture(
+                nextBlocks[i].texture,
                 offsetX + col * nextBlocks[i].cellSize,
                 offsetY + (i * 4 + row) * nextBlocks[i].cellSize,
-                nextBlocks[i].cellSize, nextBlocks[i].cellSize,
-                nextBlocks[i].colors[nextBlocks[i].id % 7]
+                WHITE
             );
 
             DrawRectangleLines(
@@ -109,5 +116,34 @@ void DrawNextBlocks(Block nextBlocks[], int offsetX, int offsetY) {
                 BLACK
             );
         }
+    }
+}
+
+void DrawGhostPiece(Block *block, Grid *grid, int offsetX, int offsetY) {
+    Block ghostBlock = *block; // Salin blok saat ini ke ghostBlock
+    while (!CheckCollision(&ghostBlock, grid, 0, 1)) {
+        for (int i = 0; i < 4; i++) {
+            ghostBlock.cells[ghostBlock.rotationState][i].row++;
+        }
+    }
+
+    // Render ghost piece dengan warna transparan
+    for (int i = 0; i < 4; i++) {
+        int row = ghostBlock.cells[ghostBlock.rotationState][i].row;
+        int col = ghostBlock.cells[ghostBlock.rotationState][i].column;
+
+        DrawTexture(
+            ghostBlock.texture,
+            offsetX + col * ghostBlock.cellSize,
+            offsetY + row * ghostBlock.cellSize,
+            (Color){255, 255, 255, 100} // Warna transparan (alpha = 100)
+        );
+
+        DrawRectangleLines(
+            offsetX + col * ghostBlock.cellSize,
+            offsetY + row * ghostBlock.cellSize,
+            ghostBlock.cellSize, ghostBlock.cellSize,
+            (Color){0, 0, 0, 100} // Garis transparan
+        );
     }
 }
