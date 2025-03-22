@@ -31,8 +31,12 @@ void UnloadBackground() {
 }
 
 void DrawBackground() {
+    float scaleX = (float)SCREEN_WIDTH / background.width;
+    float scaleY = (float)SCREEN_HEIGHT / background.height;
+    float scale = (scaleX > scaleY) ? scaleX : scaleY;
+    
     Rectangle source = { 0, 0, background.width, background.height };  
-    Rectangle dest = { 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT };  
+    Rectangle dest = { 0, 0, background.width * scale, background.height * scale };  
     Vector2 origin = { 0, 0 };
 
     DrawTexturePro(background, source, dest, origin, 0.0f, WHITE);
