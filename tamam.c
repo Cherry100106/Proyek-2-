@@ -14,7 +14,7 @@ const char *menuOptions[] = {
 const int totalOptions = 3;
 
 void InitAudioResources() {
-    bgm = LoadMusicStream("Assets/Nahidatheme.wav");
+    bgm = LoadMusicStream("Assets/BGM2.mp3");
     PlayMusicStream(bgm);
     SetMusicVolume(bgm, volume);
 }
