@@ -33,36 +33,38 @@ int main() {
     for (int i = 0; i < 3; i++) {
         Block_Init(&nextBlocks[i]);
     }
-    
 
     SetTargetFPS(60);
 
     int gravityCounter = 0;
     const int gravityDelay = 30;
     int score = 0;
+    int combo = 0;
     bool paused = false;
-    float musicVolume = 1.0;
+    float musicVolume = 1.0f;
     const float speedFade = 0.02f;
 
     while (!WindowShouldClose()) {
-        if (!paused){
-        UpdateMusicStream(bgm);
-        UpdateMusicStream(musicgameplay);
+        if (!paused) {
+            UpdateMusicStream(bgm);
+            UpdateMusicStream(musicgameplay);
         }
-        switch(currentScreen){
+
+        switch (currentScreen) {
             case MENU:
                 if (IsMusicStreamPlaying(musicgameplay)) { 
-                musicVolume -= speedFade;
-                if (musicVolume <= 0.0f) {
-                    StopMusicStream(musicgameplay);
-                    musicVolume = 0.0f;}
+                    musicVolume -= speedFade;
+                    if (musicVolume <= 0.0f) {
+                        StopMusicStream(musicgameplay);
+                        musicVolume = 0.0f;
+                    }
                     SetMusicVolume(musicgameplay, musicVolume);
                 }
                 if (!IsMusicStreamPlaying(bgm)) {
-                PlayMusicStream(bgm);
-                musicVolume = 0.0f;
+                    PlayMusicStream(bgm);
+                    musicVolume = 0.0f;
                 }
-                if (musicVolume<1.0f){
+                if (musicVolume < 1.0f) {
                     musicVolume += speedFade;
                     SetMusicVolume(bgm, musicVolume);
                 }
@@ -71,19 +73,21 @@ int main() {
                     DrawMenu();
                 EndDrawing();
                 break;
+
             case SETTINGS:
-            if (IsMusicStreamPlaying(musicgameplay)) { 
-                musicVolume -= speedFade;
-                if (musicVolume <= 0.0f) {
-                    StopMusicStream(musicgameplay);
-                    musicVolume = 0.0f;}
+                if (IsMusicStreamPlaying(musicgameplay)) { 
+                    musicVolume -= speedFade;
+                    if (musicVolume <= 0.0f) {
+                        StopMusicStream(musicgameplay);
+                        musicVolume = 0.0f;
+                    }
                     SetMusicVolume(musicgameplay, musicVolume);
                 }
                 if (!IsMusicStreamPlaying(bgm)) {
-                PlayMusicStream(bgm);
-                musicVolume = 0.0f;
+                    PlayMusicStream(bgm);
+                    musicVolume = 0.0f;
                 }
-                if (musicVolume<1.0f){
+                if (musicVolume < 1.0f) {
                     musicVolume += speedFade;
                     SetMusicVolume(bgm, musicVolume);
                 }
@@ -92,78 +96,84 @@ int main() {
                     DrawSettings();
                 EndDrawing();
                 break;
+
             case PLAY:
                 if (IsMusicStreamPlaying(bgm)) {
-                musicVolume -= speedFade;
-                if (musicVolume <= 0.0f) {
-                    StopMusicStream(bgm);
-                    musicVolume = 0.0f;
-                }
-                SetMusicVolume(bgm, musicVolume);
+                    musicVolume -= speedFade;
+                    if (musicVolume <= 0.0f) {
+                        StopMusicStream(bgm);
+                        musicVolume = 0.0f;
+                    }
+                    SetMusicVolume(bgm, musicVolume);
                 }
                 if (!IsMusicStreamPlaying(musicgameplay)) {
-                PlayMusicStream(musicgameplay);
-                musicVolume = 0.0f; 
+                    PlayMusicStream(musicgameplay);
+                    musicVolume = 0.0f;
                 }
                 if (musicVolume < 1.0f) {
-                musicVolume += speedFade;
-                SetMusicVolume(musicgameplay, musicVolume);
+                    musicVolume += speedFade;
+                    SetMusicVolume(musicgameplay, musicVolume);
                 }
-                if (IsKeyPressed(KEY_P)){
-                    paused =!paused;
+                if (IsKeyPressed(KEY_P)) {
+                    paused = !paused;
                     if (paused) {
                         PauseMusicStream(musicgameplay);
                     } else {
                         ResumeMusicStream(musicgameplay);
                     }
                 }
-                if(!paused){
-                gravityCounter++;
-                if (gravityCounter >= gravityDelay) {
-                    gravityCounter = 0;
-                    moveDown(&currentBlock, &grid);
-                }
-
-                // Operasi Pergerakan
-                if (IsKeyPressed(KEY_LEFT)) moveLeft(&currentBlock, &grid); 
-                if (IsKeyPressed(KEY_RIGHT)) moveRight(&currentBlock, &grid);
-                if (IsKeyPressed(KEY_UP)) rotateBlock(&currentBlock, &grid); 
-                if (IsKeyPressed(KEY_DOWN)) moveDown(&currentBlock, &grid);
-                if (IsKeyPressed(KEY_SPACE)) skipBawah(&currentBlock, &grid);
-
-                if (CheckCollision(&currentBlock, &grid, 0, 1)) {
-                    PlaceTetromino(&currentBlock, &grid);
-                    int rowCleared = ClearRows(&grid);
-                    score += rowCleared;
-                    if (rowCleared > 0) {
-                        int baseScore = rowCleared * 100;
-                        PlaySound(clearSound);
-                    }
-                    currentBlock = nextBlocks [0];
-                    for (int i = 0; i < 2; i++){
-                        nextBlocks[i] = nextBlocks[i+1];
+                if (!paused) {
+                    gravityCounter++;
+                    if (gravityCounter >= gravityDelay) {
+                        gravityCounter = 0;
+                        moveDown(&currentBlock, &grid);
                     }
 
-                    Block_Init(&nextBlocks[2]); // Spawn blok baru
-                    if (CheckGameOver(&grid)) currentScreen = EXIT;
+                    // Operasi Pergerakan
+                    if (IsKeyPressed(KEY_LEFT)) moveLeft(&currentBlock, &grid); 
+                    if (IsKeyPressed(KEY_RIGHT)) moveRight(&currentBlock, &grid);
+                    if (IsKeyPressed(KEY_UP)) rotateBlock(&currentBlock, &grid); 
+                    if (IsKeyPressed(KEY_DOWN)) moveDown(&currentBlock, &grid);
+                    if (IsKeyPressed(KEY_SPACE)) skipBawah(&currentBlock, &grid);
+
+                    if (CheckCollision(&currentBlock, &grid, 0, 1)) {
+                        PlaceTetromino(&currentBlock, &grid);
+                        int rowCleared = ClearRows(&grid, &combo);
+                        score += rowCleared;
+                        if (rowCleared > 0) {
+                            int baseScore = rowCleared * 100;
+                            PlaySound(clearSound);
+                        }
+                        currentBlock = nextBlocks[0];
+                        for (int i = 0; i < 2; i++) {
+                            nextBlocks[i] = nextBlocks[i + 1];
+                        }
+                        Block_Init(&nextBlocks[2]); // Spawn Blok Baru
+                        if (CheckGameOver(&grid)) {
+                            if (HandleGameOver()) {
+                                ResetGame(&grid, &currentBlock, nextBlocks, &score, &combo);
+                                currentScreen = MENU;
+                            } else {
+                                currentScreen = EXIT;
+                            }
+                        }
+                    }
                 }
-            }
-                // Merender tetris
+                // Merender Tetris
                 BeginDrawing();
                     ClearBackground(RAYWHITE);
-
-                    DrawTexture(background,360,0, WHITE);
-                    DrawTexture(frameTexture,0,0, WHITE);
+                    DrawTexture(background, 360, 0, WHITE);
+                    DrawTexture(frameTexture, 0, 0, WHITE);
                     DrawTexture(papanScore, 365, 100, WHITE);
                     DrawGhostPiece(&currentBlock, &grid, 30, 30);
-                    Grid_Draw(&grid,30,30);
+                    Grid_Draw(&grid, 30, 30);
                     Block_Draw(&currentBlock, 30, 30);
-                    DrawNextBlocks(nextBlocks,320,290);
+                    DrawNextBlocks(nextBlocks, 320, 290);
                     DrawText(TextFormat("SCORE"), 390, 50, 40, WHITE);
-                    DrawText(TextFormat("%d",score), 440, 110, 30, WHITE);
-                    DrawText(TextFormat("Next Block"),375, 200, 30, WHITE);
-                    if(paused){
-                        DrawText("PAUSED", screenWidth / 2 - 175, screenHeight / 2 - 20, 40, WHITE );
+                    DrawText(TextFormat("%d", score), 440, 110, 30, WHITE);
+                    DrawText(TextFormat("Next Block"), 375, 200, 30, WHITE);
+                    if (paused) {
+                        DrawText("PAUSED", screenWidth / 2 - 175, screenHeight / 2 - 20, 40, WHITE);
                     }
                 EndDrawing();
                 break;
@@ -172,11 +182,13 @@ int main() {
                 StopMusicStream(bgm);
                 StopMusicStream(musicgameplay);
                 CloseWindow();
-                return 0;    
+                return 0;
+        }
     }
-}
+
     UnloadSound(clearSound);
     UnloadMusicStream(bgm);
+    UnloadMusicStream(musicgameplay);
     UnloadAudioResources();
     UnloadTexture(frameTexture);
     UnloadTexture(background);
