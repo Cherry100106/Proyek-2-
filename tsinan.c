@@ -1,35 +1,44 @@
-#include "tsinan.h"
 #include <stdio.h>
+#include "tsinan.h"
 
-void rotateBlock(Block *b) {
-    int temp[4][4] = {0};
+static int currentScore = 0;  // Menyimpan score sementara
 
-    for (int i = 0; i < 4; i++) {
-        for (int j = 0; j < 4; j++) {
-            int newX = b->pivotX + (j - b->pivotY);
-            int newY = b->pivotY - (i - b->pivotX);
-            if (newX >= 0 && newX < 4 && newY >= 0 && newY < 4) {
-                temp[newY][newX] = b->shape[i][j];
-            }
+// Menambah score pemain
+void addScore(int points) {
+    currentScore += points;
+}
+
+// Mengambil high score dari file
+int getHighScore() {
+    int highScore = 0;
+    FILE *file = fopen("highscore.txt", "r");
+
+    if (file != NULL) {
+        fscanf(file, "%d", &highScore);
+        fclose(file);
+    }
+    return highScore;
+}
+
+// Menyimpan high score ke file
+void saveHighScore(int score) {
+    int highScore = getHighScore();
+
+    if (score > highScore) {
+        FILE *file = fopen("highscore.txt", "w");
+        if (file != NULL) {
+            fprintf(file, "%d", score);
+            fclose(file);
         }
     }
-
-    for (int i = 0; i < 4; i++) {
-        for (int j = 0; j < 4; j++) {
-            b->shape[i][j] = temp[i][j];
-        }
-    }
 }
 
-void moveBlockLeft(Block *b) {
-    if (b->posX > 0) {
-        b->posX--;  // Cegah keluar kiri
-    }
+// Mengambil score saat ini
+int getCurrentScore() {
+    return currentScore;
 }
 
-void moveBlockRight(Block *b) {
-    if (b->posX < SCREEN_WIDTH / CELL_SIZE - 4) {
-        b->posX++;  // Cegah keluar kanan
-    }
+// Reset score ke 0
+void resetScore() {
+    currentScore = 0;
 }
-
