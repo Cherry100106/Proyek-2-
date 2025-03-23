@@ -213,6 +213,38 @@ void Block_Init(Block *block) {
             break;
         }
 }
+WallKickOffset* getWallKickOffsets(char blockType, int rotationFrom, int rotationTo) {
+    static WallKickOffset offsets[5];
+
+    if (blockType == 'I') {  // Wall Kick untuk I-piece
+        int wallKickTable[4][5][2] = {
+            {{0, 0}, {-2, 0}, {1, 0}, {-2, -1}, {1, 2}},  // 0 -> 1
+            {{0, 0}, {-1, 0}, {2, 0}, {-1, 2}, {2, -1}},  // 1 -> 2
+            {{0, 0}, {2, 0}, {-1, 0}, {2, 1}, {-1, -2}},  // 2 -> 3
+            {{0, 0}, {1, 0}, {-2, 0}, {1, -2}, {-2, 1}}   // 3 -> 0
+        };
+
+        int index = (rotationFrom * 2 + (rotationTo > rotationFrom ? 0 : 1)) % 4;
+        for (int i = 0; i < 5; i++) {
+            offsets[i].row = wallKickTable[index][i][1];
+            offsets[i].column = wallKickTable[index][i][0];
+        }
+    } else {  // Wall Kick untuk J, L, S, T, Z
+        int wallKickTable[4][5][2] = {
+            {{0, 0}, {-1, 0}, {-1, 1}, {0, -2}, {-1, -2}},  // 0 -> 1
+            {{0, 0}, {1, 0}, {1, -1}, {0, 2}, {1, 2}},  // 1 -> 2
+            {{0, 0}, {1, 0}, {1, 1}, {0, -2}, {1, -2}},  // 2 -> 3
+            {{0, 0}, {-1, 0}, {-1, -1}, {0, 2}, {-1, 2}}  // 3 -> 0
+        };
+
+        int index = (rotationFrom * 2 + (rotationTo > rotationFrom ? 0 : 1)) % 4;
+        for (int i = 0; i < 5; i++) {
+            offsets[i].row = wallKickTable[index][i][1];
+            offsets[i].column = wallKickTable[index][i][0];
+        }
+    }
+    return offsets;
+}
 
 
 void Block_Draw(Block *block, int offsetX, int offsetY) {

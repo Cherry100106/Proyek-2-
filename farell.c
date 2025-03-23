@@ -38,37 +38,78 @@ void moveDown(Block *block, Grid *grid) {
 }
 
 //fungsi rotasi blok
+//fungsi rotasi blok
 void rotateBlock(Block *block, Grid *grid) {
-    int nextRotation = (block->rotationState + 1) % 4;
-    int pivotRow = block->cells[block->rotationState][0].row;
-    int pivotCol = block->cells[block->rotationState][0].column;
+    int nextRotation = (block->rotationState + 1) % 4;  // Rotasi berikutnya
+
+    // Ambil pivot dari rotasi saat ini
+    Position pivot = block->cells[block->rotationState][0];  
 
     Position tempCells[4];
     for (int i = 0; i < 4; i++) {
-        tempCells[i].row = block->cells[nextRotation][i].row;
-        tempCells[i].column = block->cells[nextRotation][i].column;
+        int relRow = block->cells[nextRotation][i].row - block->cells[nextRotation][0].row;
+        int relCol = block->cells[nextRotation][i].column - block->cells[nextRotation][0].column;
+        
+        // Terapkan rotasi dengan mempertahankan pivot
+        tempCells[i].row = pivot.row + relRow;
+        tempCells[i].column = pivot.column + relCol;
     }
 
-    int offsetRow = pivotRow - tempCells[0].row;
-    int offsetCol = pivotCol - tempCells[0].column;
+    bool canRotate = false;
+    int finalOffsetRow = 0, finalOffsetCol = 0;
 
-    bool canRotate = true;
-    for (int i = 0; i < 4; i++) {
-        int row = tempCells[i].row + offsetRow;
-        int col = tempCells[i].column + offsetCol;
-        if (row < 0 || row >= NUM_ROWS || col < 0 || col >= NUM_COLS || grid->grid[row][col]) {
-            canRotate = false;
+    // Ambil Wall Kick Offset
+    WallKickOffset wallKickOffsets[5];
+    if (block->blockType != 'O') {
+        WallKickOffset* tempOffsets = getWallKickOffsets(block->blockType, block->rotationState, nextRotation);
+        for (int i = 0; i < 5; i++) {
+            wallKickOffsets[i] = tempOffsets[i];
+        }
+    } else {
+        for (int i = 0; i < 5; i++) {
+            wallKickOffsets[i].row = 0;
+            wallKickOffsets[i].column = 0;
+        }
+    }
+
+    // Coba setiap wall kick offset
+    for (int k = 0; k < 5; k++) {
+        int testOffsetRow = wallKickOffsets[k].row;
+        int testOffsetCol = wallKickOffsets[k].column;
+
+        bool validPosition = true;
+        for (int i = 0; i < 4; i++) {
+            int row = tempCells[i].row + testOffsetRow;
+            int col = tempCells[i].column + testOffsetCol;
+
+            // Periksa apakah posisi valid
+            if (row < 0 || row >= NUM_ROWS || col < 0 || col >= NUM_COLS || grid->grid[row][col]) {
+                validPosition = false;
+                break;
+            }
+        }
+
+        // Jika posisi valid, simpan offset dan keluar dari loop
+        if (validPosition) {
+            canRotate = true;
+            finalOffsetRow = testOffsetRow;
+            finalOffsetCol = testOffsetCol;
             break;
         }
     }
+
+    // Jika bisa rotasi, update posisi blok
     if (canRotate) {
         block->rotationState = nextRotation;
+
+        // Update posisi blok dengan mempertahankan pivot
         for (int i = 0; i < 4; i++) {
-            block->cells[block->rotationState][i].row = tempCells[i].row + offsetRow;
-            block->cells[block->rotationState][i].column = tempCells[i].column + offsetCol;
+            block->cells[nextRotation][i].row = tempCells[i].row + finalOffsetRow;
+            block->cells[nextRotation][i].column = tempCells[i].column + finalOffsetCol;
         }
     }
 }
+
 
 //fungsi untuk langsung kebawah
 void skipBawah(Block *block, Grid *grid){
