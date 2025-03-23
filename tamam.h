@@ -3,8 +3,6 @@
 
 #include "raylib.h"
 
-#define SCREEN_WIDTH 550
-#define SCREEN_HEIGHT 600
 
 typedef enum {
     MENU,

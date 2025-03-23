@@ -1,8 +1,8 @@
 #include "wafi.h"
 #include "farell.h"
 #include "nashwa.h"
-#include "tamam.h"
 #include "tsinan.h"
+#include "tamam.h"
 #include <stdlib.h>
 #include <time.h>
 
@@ -46,6 +46,7 @@ int main() {
     const float speedFade = 0.02f;
     int highScore = 0;
     loadHighScore(&highScore);
+    bool countdownSelesai = false;
 
     while (!WindowShouldClose()) {
         if (!paused) {
@@ -74,7 +75,7 @@ int main() {
                 HandleMenuInput();
                 BeginDrawing();
                     DrawMenu();
-                    DrawText(TextFormat("High Score: %d", highScore),125, 400, 40, WHITE);
+                    displayHighScore(125,400);
                 EndDrawing();
                 break;
 
@@ -102,6 +103,10 @@ int main() {
                 break;
 
             case PLAY:
+                if (!countdownSelesai) {
+                countdownSelesai = DrawCountdown();
+                break;
+                }
                 if (IsMusicStreamPlaying(bgm)) {
                     musicVolume -= speedFade;
                     if (musicVolume <= 0.0f) {

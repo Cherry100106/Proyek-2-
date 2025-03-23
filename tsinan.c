@@ -42,5 +42,5 @@ int getHighScore() {
 // Display highscore menggunakan Raylib
 void displayHighScore(int offsetX, int offsetY) {
     int highScore = getHighScore();
-    DrawText(TextFormat("High Score: %d", highScore), offsetX, offsetY, 20, WHITE);
+    DrawText(TextFormat("High Score: %d", highScore), offsetX, offsetY, 40, WHITE);
 }

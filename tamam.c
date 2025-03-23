@@ -1,5 +1,11 @@
 #include "tamam.h"
 
+#include "raylib.h"
+
+#define SCREEN_WIDTH 550
+#define SCREEN_HEIGHT 600
+
+
 GameState currentScreen = MENU;
 int selectedOption = 0;
 float volume = 0.5f;
@@ -24,7 +30,7 @@ void UnloadAudioResources() {
 }
 
 void InitBackground() {
-    background = LoadTexture("Assets/Lobby2.png");
+    background = LoadTexture("Assets/Lobby.jpg");
 }
 void UnloadBackground() {
     UnloadTexture(background);
