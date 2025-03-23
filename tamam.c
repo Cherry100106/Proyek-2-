@@ -24,7 +24,7 @@ void UnloadAudioResources() {
 }
 
 void InitBackground() {
-    background = LoadTexture("Assets/Lobby.jpg");
+    background = LoadTexture("Assets/Lobby2.png");
 }
 void UnloadBackground() {
     UnloadTexture(background);

@@ -2,6 +2,7 @@
 #include "farell.h"
 #include "nashwa.h"
 #include "tamam.h"
+#include "tsinan.h"
 #include <stdlib.h>
 #include <time.h>
 
@@ -43,6 +44,8 @@ int main() {
     bool paused = false;
     float musicVolume = 1.0f;
     const float speedFade = 0.02f;
+    int highScore = 0;
+    loadHighScore(&highScore);
 
     while (!WindowShouldClose()) {
         if (!paused) {
@@ -71,6 +74,7 @@ int main() {
                 HandleMenuInput();
                 BeginDrawing();
                     DrawMenu();
+                    DrawText(TextFormat("High Score: %d", highScore),125, 400, 40, WHITE);
                 EndDrawing();
                 break;
 
@@ -150,6 +154,7 @@ int main() {
                         }
                         Block_Init(&nextBlocks[2]); // Spawn Blok Baru
                         if (CheckGameOver(&grid)) {
+                            saveHighScore(score);
                             if (HandleGameOver()) {
                                 ResetGame(&grid, &currentBlock, nextBlocks, &score, &combo);
                                 currentScreen = MENU;
