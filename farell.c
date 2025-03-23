@@ -155,15 +155,18 @@ bool DrawCountdown() {
     static int frames = 0;
 
     if (countdownsaatini >= 4) {
+        countdownsaatini = 0;
+        frames = 0;
         return true;
     }
 
     // Render countdown
     BeginDrawing();
+        ClearBackground(RAYWHITE);
         DrawText(countdownTexts[countdownsaatini], 
                  GetScreenWidth() / 2 - MeasureText(countdownTexts[countdownsaatini], 40) / 2, 
                  GetScreenHeight() / 2 - 20, 
-                 40, WHITE);
+                 40, BLACK);
     EndDrawing();
     frames++;
     if (frames >= durasicountdown) {

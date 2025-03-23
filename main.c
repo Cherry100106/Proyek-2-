@@ -163,6 +163,7 @@ int main() {
                             if (HandleGameOver()) {
                                 ResetGame(&grid, &currentBlock, nextBlocks, &score, &combo);
                                 currentScreen = MENU;
+                                countdownSelesai = false;
                             } else {
                                 currentScreen = EXIT;
                             }
