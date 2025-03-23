@@ -120,7 +120,7 @@ void DrawNextBlocks(Block nextBlocks[], int offsetX, int offsetY) {
 }
 
 void DrawGhostPiece(Block *block, Grid *grid, int offsetX, int offsetY) {
-    Block ghostBlock = *block; // Salin blok saat ini ke ghostBlock
+    Block ghostBlock = *block; // Menyalin blok saat ini ke ghostBlock
     while (!CheckCollision(&ghostBlock, grid, 0, 1)) {
         for (int i = 0; i < 4; i++) {
             ghostBlock.cells[ghostBlock.rotationState][i].row++;
@@ -136,14 +136,43 @@ void DrawGhostPiece(Block *block, Grid *grid, int offsetX, int offsetY) {
             ghostBlock.texture,
             offsetX + col * ghostBlock.cellSize,
             offsetY + row * ghostBlock.cellSize,
-            (Color){255, 255, 255, 100} // Warna transparan (alpha = 100)
+            (Color){255, 255, 255, 100}
         );
 
         DrawRectangleLines(
             offsetX + col * ghostBlock.cellSize,
             offsetY + row * ghostBlock.cellSize,
             ghostBlock.cellSize, ghostBlock.cellSize,
-            (Color){0, 0, 0, 100} // Garis transparan
+            (Color){0, 0, 0, 100}
         );
     }
+}
+
+bool DrawCountdown() {
+    const char* countdownTexts[] = {"3", "2", "1", "Go!!"};
+    const int durasicountdown = 60;
+    static int countdownsaatini = 0;
+    static int frames = 0;
+
+    if (countdownsaatini >= 4) {
+        countdownsaatini = 0;
+        frames = 0;
+        return true;
+    }
+
+    // Render countdown
+    BeginDrawing();
+        ClearBackground(RAYWHITE);
+        DrawText(countdownTexts[countdownsaatini], 
+                 GetScreenWidth() / 2 - MeasureText(countdownTexts[countdownsaatini], 40) / 2, 
+                 GetScreenHeight() / 2 - 20, 
+                 40, BLACK);
+    EndDrawing();
+    frames++;
+    if (frames >= durasicountdown) {
+        frames = 0;
+        countdownsaatini++;
+    }
+
+    return false;
 }
