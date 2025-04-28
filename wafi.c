@@ -46,8 +46,13 @@ void Block_Init(Block *block) {
             // Rotasi 0° 
             Position_Init(&block->cells[0][0], startY, startX);
             Position_Init(&block->cells[0][1], startY, startX + 1);
-            Position_Init(&block->cells[0][2], startY, startX + 2);
+            Position_Init(&block->cells[0][2], startY, startX + 2); 
             Position_Init(&block->cells[0][3], startY, startX + 3);
+
+        // x x x x (Pusat rotasinya ada pada indeks 1)
+        // . . . . 
+        // . . . .
+        // . . . .
 
             // Rotasi 90° 
             Position_Init(&block->cells[1][0], startY, startX);
@@ -55,11 +60,21 @@ void Block_Init(Block *block) {
             Position_Init(&block->cells[1][2], startY + 2, startX);
             Position_Init(&block->cells[1][3], startY + 3, startX);
 
+        // x . . .
+        // x . . .
+        // x . . . 
+        // x . . .
+
             // Rotasi 180° 
             Position_Init(&block->cells[2][0], startY, startX);
             Position_Init(&block->cells[2][1], startY, startX + 1);
             Position_Init(&block->cells[2][2], startY, startX + 2);
             Position_Init(&block->cells[2][3], startY, startX + 3);
+
+        // x x x x
+        // . . . . 
+        // . . . .
+        // . . . . 
 
             // Rotasi 270°
             Position_Init(&block->cells[3][0], startY, startX);
@@ -67,6 +82,11 @@ void Block_Init(Block *block) {
             Position_Init(&block->cells[3][2], startY + 2, startX);
             Position_Init(&block->cells[3][3], startY + 3, startX);
             break;
+        
+        // x . . . 
+        // x . . . 
+        // x . . . 
+        // x . . .
 
         case 1: // L
             // Rotasi 0°
@@ -75,17 +95,32 @@ void Block_Init(Block *block) {
             Position_Init(&block->cells[0][2], startY + 2, startX);
             Position_Init(&block->cells[0][3], startY + 2, startX + 1);
 
+        // . x . . 
+        // . x . . (Pusat rotasinya ada pada indeks ke-2 )
+        // . x x . 
+        // . . . .
+
             // Rotasi 90°
             Position_Init(&block->cells[1][0], startY, startX + 1);
             Position_Init(&block->cells[1][1], startY, startX);
             Position_Init(&block->cells[1][2], startY, startX + 2);
             Position_Init(&block->cells[1][3], startY + 1, startX + 2);
+        
+        // . . . . 
+        // x x x . 
+        // . . x . 
+        // . . . .
 
             // Rotasi 180°
             Position_Init(&block->cells[2][0], startY, startX);
-            Position_Init(&block->cells[2][1], startY, startX + 1);
+            Position_Init(&block->cells[2][1], startY, startX + 1); 
             Position_Init(&block->cells[2][2], startY + 1, startX);
             Position_Init(&block->cells[2][3], startY + 2, startX);
+        
+        // . . . . 
+        // x x . .
+        // . x . . 
+        // . x . .
 
             // Rotasi 270°
             Position_Init(&block->cells[3][0], startY, startX);
@@ -94,6 +129,11 @@ void Block_Init(Block *block) {
             Position_Init(&block->cells[3][3], startY + 1, startX + 2);
             break;
 
+        // . . . . 
+        // . x . . 
+        // . x x x 
+        // . . . .
+
         case 2: // J
             // Rotasi 0°
             Position_Init(&block->cells[0][0], startY, startX + 1);
@@ -101,11 +141,21 @@ void Block_Init(Block *block) {
             Position_Init(&block->cells[0][2], startY + 2, startX + 1);
             Position_Init(&block->cells[0][3], startY + 2, startX);
 
+        // . . x . 
+        // . . x . (Pusat rotasinya ada pada indeks ke-2)
+        // . x x . 
+        // . . . .
+
             // Rotasi 90°
             Position_Init(&block->cells[1][0], startY, startX);
             Position_Init(&block->cells[1][1], startY, startX + 1);
             Position_Init(&block->cells[1][2], startY, startX + 2);
             Position_Init(&block->cells[1][3], startY + 1, startX);
+
+        // . . . . 
+        // . x x x (Pusat rotasinya ada pada indeks ke-2)
+        // . x . . 
+        // . . . .
 
             // Rotasi 180°
             Position_Init(&block->cells[2][0], startY, startX + 1);
@@ -113,12 +163,22 @@ void Block_Init(Block *block) {
             Position_Init(&block->cells[2][2], startY + 1, startX + 1);
             Position_Init(&block->cells[2][3], startY + 2, startX + 1);
 
+        // . . . . 
+        // . x x . 
+        // . x . . 
+        // . x . .
+
             // Rotasi 270°
             Position_Init(&block->cells[3][0], startY, startX + 2);
             Position_Init(&block->cells[3][1], startY + 1, startX);
             Position_Init(&block->cells[3][2], startY + 1, startX + 1);
             Position_Init(&block->cells[3][3], startY + 1, startX + 2);
             break;
+            
+        // . . . . 
+        // . . x . 
+        // x x x . 
+        // . . . .
 
         case 3: // O
             // Rotasi 0°, 90°, 180°, 270°
@@ -133,6 +193,10 @@ void Block_Init(Block *block) {
                 }
             }
             break;
+        // . . . . 
+        // . x x . (No rotation center)
+        // . x x . 
+        // . . . .
 
         case 4: // S
             // Rotasi 0°
@@ -141,18 +205,28 @@ void Block_Init(Block *block) {
             Position_Init(&block->cells[0][2], startY + 1, startX);
             Position_Init(&block->cells[0][3], startY + 1, startX + 1);
 
+        // . . . . 
+        // . . x x 
+        // . x x . 
+        // . . . .
+
             // Rotasi 90°
             Position_Init(&block->cells[1][0], startY, startX);
             Position_Init(&block->cells[1][1], startY + 1, startX);
             Position_Init(&block->cells[1][2], startY + 1, startX + 1);
             Position_Init(&block->cells[1][3], startY + 2, startX + 1);
 
+        // . . . . 
+        // . . x  
+        // . x x . 
+        // . x . .
+
             // Rotasi 180° 
             Position_Init(&block->cells[2][0], startY, startX + 1);
             Position_Init(&block->cells[2][1], startY, startX + 2);
             Position_Init(&block->cells[2][2], startY + 1, startX);
             Position_Init(&block->cells[2][3], startY + 1, startX + 1);
-
+        
             // Rotasi 270° 
             Position_Init(&block->cells[3][0], startY, startX);
             Position_Init(&block->cells[3][1], startY + 1, startX);
@@ -167,11 +241,21 @@ void Block_Init(Block *block) {
             Position_Init(&block->cells[0][2], startY + 1, startX + 1);
             Position_Init(&block->cells[0][3], startY + 1, startX + 2);
 
+        // . . . . 
+        // . . x . 
+        // . x x x 
+        // . . . .
+
             // Rotasi 90°
             Position_Init(&block->cells[1][0], startY, startX);
             Position_Init(&block->cells[1][1], startY + 1, startX);
             Position_Init(&block->cells[1][2], startY + 1, startX + 1);
             Position_Init(&block->cells[1][3], startY + 2, startX);
+
+        // . . . . 
+        // . x . . 
+        // . x x . 
+        // . x . .
 
             // Rotasi 180°
             Position_Init(&block->cells[2][0], startY, startX);
@@ -179,12 +263,22 @@ void Block_Init(Block *block) {
             Position_Init(&block->cells[2][2], startY, startX + 2);
             Position_Init(&block->cells[2][3], startY + 1, startX + 1);
 
+        // . . . . 
+        // x x x . 
+        // . x . . 
+        // . . . .
+
             // Rotasi 270°
             Position_Init(&block->cells[3][0], startY, startX + 1);
             Position_Init(&block->cells[3][1], startY + 1, startX);
             Position_Init(&block->cells[3][2], startY + 1, startX + 1);
             Position_Init(&block->cells[3][3], startY + 2, startX + 1);
             break;
+        
+        // . . . . 
+        // . x . . 
+        // x x . . 
+        // . x . .
 
     case 6: // Z
             // Rotasi 0°
@@ -193,11 +287,21 @@ void Block_Init(Block *block) {
             Position_Init(&block->cells[0][2], startY + 1, startX + 1);
             Position_Init(&block->cells[0][3], startY + 1, startX + 2);
 
+        // . . . . 
+        // . x x . (Pusat rotasinya ada pada indeks ke-1) 
+        // . . x x 
+        // . . . .
+
             // Rotasi 90°
             Position_Init(&block->cells[1][0], startY, startX + 1);
             Position_Init(&block->cells[1][1], startY + 1, startX);
             Position_Init(&block->cells[1][2], startY + 1, startX + 1);
             Position_Init(&block->cells[1][3], startY + 2, startX);
+        
+        // . . . . 
+        // . . x . 
+        // . x x . 
+        // . x . .
 
             // Rotasi 180° (sama dengan 0°)
             Position_Init(&block->cells[2][0], startY, startX);
@@ -291,7 +395,7 @@ void Grid_Draw(Grid *grid,int offsetX,int offsetY) {
     for (int i = 0; i < NUM_ROWS; i++) {
         for (int j = 0; j < NUM_COLS; j++) {
             if (grid->grid[i][j]) {
-                int blockId = grid->grid[i][j] - 1; // ID blok disimpan di grid
+                int blockId = grid->grid[i][j] - 1;
                 DrawTexture(
                     grid->blockTextures[blockId],
                     offsetX + j * grid->cellSize,
