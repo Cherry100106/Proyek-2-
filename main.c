@@ -179,7 +179,7 @@ int main() {
                     DrawGhostPiece(&currentBlock, &grid, 30, 30);
                     Grid_Draw(&grid, 30, 30);
                     Block_Draw(&currentBlock, 30, 30);
-                    DrawNextBlocks(nextBlocks, 320, 290);
+                    DrawNextBlocks(nextBlocks, 420, 290);
                     DrawText(TextFormat("SCORE"), 390, 50, 40, WHITE);
                     DrawText(TextFormat("%d", score), 440, 110, 30, WHITE);
                     DrawText(TextFormat("Next Block"), 375, 200, 30, WHITE);

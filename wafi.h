@@ -18,8 +18,8 @@ typedef struct {
     int cellSize;
     int rotationState;
     Texture2D texture;
-    int row;
-    int col;
+    int row; // Posisi absolut baris
+    int col; // Posisi absolut kolom
 } Block;
 
 typedef struct {
@@ -31,8 +31,6 @@ typedef struct {
 typedef struct {
     int row;
     int column;
-    int rowOffset;
-    int colOffset;
 } WallKickOffset;
 
 void Position_Init(Position *pos, int row, int column);

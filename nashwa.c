@@ -3,20 +3,16 @@
 #include <raylib.h>
 
 bool CheckCollision(Block *block, Grid *grid, int dx, int dy) {
-    for (int i = 0; i < 4; i++) {
-        int newRow = block->cells[block->rotationState][i].row + dy;
-        int newCol = block->cells[block->rotationState][i].column + dx;
-        if (newCol < 0 || newCol >= NUM_COLS || newRow >= NUM_ROWS || (newRow >= 0 && grid->grid[newRow][newCol])) {
-            return true;
-        }
-    }
-    return false;
+    Block tempBlock = *block;
+    tempBlock.row += dy;
+    tempBlock.col += dx;
+    return !IsValidPosition(&tempBlock, grid);
 }
 
 void PlaceTetromino(Block *block, Grid *grid) {
     for (int i = 0; i < 4; i++) {
-        int row = block->cells[block->rotationState][i].row;
-        int col = block->cells[block->rotationState][i].column;
+        int row = block->cells[block->rotationState][i].row + block->row;
+        int col = block->cells[block->rotationState][i].column + block->col;
         if (row >= 0 && row < NUM_ROWS && col >= 0 && col < NUM_COLS) {
             grid->grid[row][col] = block->id + 1;
         }
