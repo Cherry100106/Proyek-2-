@@ -6,6 +6,7 @@
 #define NUM_ROWS 20
 #define NUM_COLS 10
 
+
 typedef struct {
     int row;
     int column;
@@ -22,8 +23,16 @@ typedef struct {
     int col; // Posisi absolut kolom
 } Block;
 
+typedef struct GridNode {
+    int row;
+    int col;
+    int blockId; // 0 untuk kosong, >0 untuk ID tetromino (+1 dari Block.id)
+    struct GridNode* next;
+    struct GridNode* prev;
+} GridNode;
+
 typedef struct {
-    int grid[NUM_ROWS][NUM_COLS];
+    GridNode* head; // Pointer ke node pertama
     int cellSize;
     Texture2D blockTextures[7];
 } Grid;
@@ -33,6 +42,9 @@ typedef struct {
     int column;
 } WallKickOffset;
 
+extern int startX;
+extern int startY;
+
 void Position_Init(Position *pos, int row, int column);
 void Block_Init(Block *block);
 void Block_Draw(Block *block, int offsetX, int offsetY);
@@ -41,5 +53,7 @@ void Grid_Draw(Grid *grid, int offsetX, int offsetY);
 void LoadGridTextures(Grid *grid);
 WallKickOffset* getWallKickOffsets(char blockType, int rotationFrom, int rotationTo);
 int IsValidPosition(Block *block, Grid *grid);
+GridNode* Grid_GetNode(Grid *grid, int row, int col);
+void Grid_SetNode(Grid *grid, int row, int col, int blockId);
 
 #endif

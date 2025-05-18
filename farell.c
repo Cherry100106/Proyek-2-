@@ -147,3 +147,59 @@ bool DrawCountdown() {
 
     return false;
 }
+
+void DrawHoldBlock(Block *holdBlock, int offsetX, int offsetY) {
+    if (holdBlock->id >= 0) { 
+        for (int i = 0; i < 4; i++) {
+            int row = holdBlock->cells[0][i].row; // Megunakan rotasi 0 untuk tampilan hold
+            int col = holdBlock->cells[0][i].column;
+            DrawTexture(holdBlock->texture, 
+                        offsetX + col * holdBlock->cellSize, 
+                        offsetY + row * holdBlock->cellSize, 
+                        WHITE);
+            DrawRectangleLines(offsetX + col * holdBlock->cellSize, 
+                               offsetY + row * holdBlock->cellSize, 
+                               holdBlock->cellSize, holdBlock->cellSize, 
+                               BLACK);
+        }
+    }
+}
+
+void HoldBlock(Block *currentBlock, Block *holdBlock, Block *nextBlocks, bool *hasHeld, Grid *grid) {
+    Block tempHold;
+    if (*hasHeld) return; // Mencegah hold berulang pada tetromino yang sama
+
+    Block temp = *currentBlock;
+    // Reset posisi dan rotasi currentBlock
+    temp.row = startY;
+    temp.col = startX;
+    temp.rotationState = 0;
+
+    if (holdBlock->id < 0) { // Jika belum ada tetromino di hold
+        *holdBlock = temp;
+        *currentBlock = nextBlocks[0];
+        for (int i = 0; i < 2; i++) {
+            nextBlocks[i] = nextBlocks[i + 1];
+        }
+        Block_Init(&nextBlocks[2]);
+    } else { // Jika sudah ada tetromino di hold, tukar dengan blok saat ini
+        tempHold = *holdBlock;
+        *holdBlock = temp;
+        *currentBlock = tempHold;
+    }
+
+    // Reset posisi dan rotasi currentBlock setelah ditukar
+    currentBlock->row = startY;
+    currentBlock->col = startX;
+    currentBlock->rotationState = 0;
+
+    // Mempastikan posisi valid setelah hold
+    if (!IsValidPosition(currentBlock, grid)) {
+        // Jika tidak valid, kembalikan ke hold dan batalkan
+        *currentBlock = temp;
+        *holdBlock = *currentBlock;
+        return;
+    }
+
+    *hasHeld = true; // Tandai bahwa hold sudah digunakan
+}

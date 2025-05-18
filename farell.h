@@ -10,5 +10,7 @@ void skipBawah(Block *block, Grid *grid);
 void DrawNextBlocks(Block nextBlocks[], int offsetX, int offsetY);
 void DrawGhostPiece(Block *block, Grid *grid, int offsetX, int offsetY);
 bool DrawCountdown();
+void DrawHoldBlock(Block *holdBlock, int offsetX, int offsetY);
+void HoldBlock(Block *currentBlock, Block *holdBlock, Block *nextBlocks, bool *hasHeld, Grid *grid);
 
 #endif

@@ -30,6 +30,8 @@ int main() {
 
     Block currentBlock;
     Block nextBlocks[3];
+    Block holdBlock = { .id = -1 };
+    bool hasHeld = false; 
     Block_Init(&currentBlock);
     for (int i = 0; i < 3; i++) {
         Block_Init(&nextBlocks[i]);
@@ -104,8 +106,8 @@ int main() {
 
             case PLAY:
                 if (!countdownSelesai) {
-                countdownSelesai = DrawCountdown();
-                break;
+                    countdownSelesai = DrawCountdown();
+                    break;
                 }
                 if (IsMusicStreamPlaying(bgm)) {
                     musicVolume -= speedFade;
@@ -138,12 +140,12 @@ int main() {
                         moveDown(&currentBlock, &grid);
                     }
 
-                    // Operasi Pergerakan
                     if (IsKeyPressed(KEY_LEFT)) moveLeft(&currentBlock, &grid); 
                     if (IsKeyPressed(KEY_RIGHT)) moveRight(&currentBlock, &grid);
                     if (IsKeyPressed(KEY_UP)) rotateBlock(&currentBlock, &grid); 
                     if (IsKeyPressed(KEY_DOWN)) moveDown(&currentBlock, &grid);
                     if (IsKeyPressed(KEY_SPACE)) skipBawah(&currentBlock, &grid);
+                    if (IsKeyPressed(KEY_C)) HoldBlock(&currentBlock, &holdBlock, nextBlocks, &hasHeld, &grid);
 
                     if (CheckCollision(&currentBlock, &grid, 0, 1)) {
                         PlaceTetromino(&currentBlock, &grid);
@@ -157,11 +159,12 @@ int main() {
                         for (int i = 0; i < 2; i++) {
                             nextBlocks[i] = nextBlocks[i + 1];
                         }
-                        Block_Init(&nextBlocks[2]); // Spawn Blok Baru
+                        Block_Init(&nextBlocks[2]);
+                        hasHeld = false;
                         if (CheckGameOver(&grid)) {
                             saveHighScore(score);
                             if (HandleGameOver()) {
-                                ResetGame(&grid, &currentBlock, nextBlocks, &score, &combo);
+                                ResetGame(&grid, &currentBlock, nextBlocks, &score, &combo, &holdBlock, &hasHeld);
                                 currentScreen = MENU;
                                 countdownSelesai = false;
                             } else {
@@ -170,19 +173,20 @@ int main() {
                         }
                     }
                 }
-                // Merender Tetris
                 BeginDrawing();
                     ClearBackground(RAYWHITE);
                     DrawTexture(background, 360, 0, WHITE);
                     DrawTexture(frameTexture, 0, 0, WHITE);
-                    DrawTexture(papanScore, 365, 100, WHITE);
+                    DrawTexture(papanScore, 365, 75, WHITE);
                     DrawGhostPiece(&currentBlock, &grid, 30, 30);
                     Grid_Draw(&grid, 30, 30);
                     Block_Draw(&currentBlock, 30, 30);
-                    DrawNextBlocks(nextBlocks, 420, 290);
-                    DrawText(TextFormat("SCORE"), 390, 50, 40, WHITE);
-                    DrawText(TextFormat("%d", score), 440, 110, 30, WHITE);
-                    DrawText(TextFormat("Next Block"), 375, 200, 30, WHITE);
+                    DrawNextBlocks(nextBlocks, 420, 320);
+                    DrawHoldBlock(&holdBlock, 400, 200 );
+                    DrawText(TextFormat("SCORE"), 390, 35, 30, WHITE);
+                    DrawText(TextFormat("%d", score), 440, 85, 30, WHITE);
+                    DrawText(TextFormat("Next Block"), 375, 280, 30, WHITE);
+                    DrawText(TextFormat("Hold Block"), 375, 150, 30, WHITE);
                     if (paused) {
                         DrawText("PAUSED", screenWidth / 2 - 175, screenHeight / 2 - 20, 40, WHITE);
                     }
@@ -204,12 +208,11 @@ int main() {
     UnloadTexture(frameTexture);
     UnloadTexture(background);
     UnloadTexture(papanScore);
-
     UnloadTexture(currentBlock.texture);
+    UnloadTexture(holdBlock.texture);
     for (int i = 0; i < 3; i++) {
         UnloadTexture(nextBlocks[i].texture);
     }
-
     CloseAudioDevice();
     UnloadBackground();
     CloseWindow();

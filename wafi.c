@@ -97,31 +97,89 @@ void LoadGridTextures(Grid *grid) {
 }
 
 void Grid_Init(Grid *grid) {
-    for (int i = 0; i < NUM_ROWS; i++)
-        for (int j = 0; j < NUM_COLS; j++)
-            grid->grid[i][j] = 0;
+    grid->head = NULL;
     grid->cellSize = 30;
 }
 
-void Grid_Draw(Grid *grid, int offsetX, int offsetY) {
-    for (int i = 0; i < NUM_ROWS; i++){
-        for (int j = 0; j < NUM_COLS; j++) {
-            if (grid->grid[i][j]) {
-                int blockId = grid->grid[i][j] - 1;
-                DrawTexture(grid->blockTextures[blockId], offsetX + j * grid->cellSize, offsetY + i * grid->cellSize, WHITE);
-                DrawRectangleLines(offsetX + j * grid->cellSize, offsetY + i * grid->cellSize, grid->cellSize, grid->cellSize, BLACK);
-            } else {
-                DrawRectangleLines(offsetX + j * grid->cellSize, offsetY + i * grid->cellSize, grid->cellSize, grid->cellSize, BLACK);
-            }
+GridNode* Grid_GetNode(Grid *grid, int row, int col) {
+    GridNode* current = grid->head;
+    while (current) {
+        if (current->row == row && current->col == col) {
+            return current;
         }
-    }    
+        current = current->next;
+    }
+    return NULL;
+}
+
+void Grid_SetNode(Grid *grid, int row, int col, int blockId) {
+    GridNode* node = Grid_GetNode(grid, row, col);
+    if (blockId == 0) {
+        // Hapus node jika blockId = 0
+        if (node) {
+            if (node->prev) {
+                node->prev->next = node->next;
+            } else {
+                grid->head = node->next;
+            }
+            if (node->next) {
+                node->next->prev = node->prev;
+            }
+            free(node);
+        }
+        return;
+    }
+    // Jika node sudah ada, perbarui blockId
+    if (node) {
+        node->blockId = blockId;
+        return;
+    }
+    // Buat node baru
+    GridNode* newNode = (GridNode*)malloc(sizeof(GridNode));
+    newNode->row = row;
+    newNode->col = col;
+    newNode->blockId = blockId;
+    newNode->next = grid->head;
+    newNode->prev = NULL;
+    if (grid->head) {
+        grid->head->prev = newNode;
+    }
+    grid->head = newNode;
+}
+
+void Grid_Draw(Grid *grid, int offsetX, int offsetY) {
+    // Gambar semua sel sebagai kotak kosong terlebih dahulu
+    for (int i = 0; i < NUM_ROWS; i++) {
+        for (int j = 0; j < NUM_COLS; j++) {
+            DrawRectangleLines(offsetX + j * grid->cellSize, offsetY + i * grid->cellSize, 
+                               grid->cellSize, grid->cellSize, BLACK);
+        }
+    }
+    // Gambar sel yang terisi dari linked list
+    GridNode* current = grid->head;
+    while (current) {
+        if (current->blockId > 0) {
+            int blockId = current->blockId - 1;
+            DrawTexture(grid->blockTextures[blockId], 
+                        offsetX + current->col * grid->cellSize, 
+                        offsetY + current->row * grid->cellSize, WHITE);
+            DrawRectangleLines(offsetX + current->col * grid->cellSize, 
+                               offsetY + current->row * grid->cellSize, 
+                               grid->cellSize, grid->cellSize, BLACK);
+        }
+        current = current->next;
+    }
 }
 
 int IsValidPosition(Block *block, Grid *grid) {
     for (int i = 0; i < 4; i++) {
         int row = block->cells[block->rotationState][i].row + block->row;
         int col = block->cells[block->rotationState][i].column + block->col;
-        if (row < 0 || row >= NUM_ROWS || col < 0 || col >= NUM_COLS || grid->grid[row][col]) {
+        if (row < 0 || row >= NUM_ROWS || col < 0 || col >= NUM_COLS) {
+            return 0;
+        }
+        GridNode* node = Grid_GetNode(grid, row, col);
+        if (node && node->blockId > 0) {
             return 0;
         }
     }

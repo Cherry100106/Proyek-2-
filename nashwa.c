@@ -14,14 +14,18 @@ void PlaceTetromino(Block *block, Grid *grid) {
         int row = block->cells[block->rotationState][i].row + block->row;
         int col = block->cells[block->rotationState][i].column + block->col;
         if (row >= 0 && row < NUM_ROWS && col >= 0 && col < NUM_COLS) {
-            grid->grid[row][col] = block->id + 1;
+            Grid_SetNode(grid, row, col, block->id + 1);
         }
     }
 }
 
 bool CheckGameOver(Grid *grid) {
-    for (int col = 0; col < NUM_COLS; col++) {
-        if (grid->grid[0][col]) return true;
+    GridNode* current = grid->head;
+    while (current) {
+        if (current->row == 0 && current->blockId > 0) {
+            return true;
+        }
+        current = current->next;
     }
     return false;
 }
@@ -31,22 +35,43 @@ int ClearRows(Grid *grid, int *combo) {
     for (int row = NUM_ROWS - 1; row >= 0; row--) {
         bool full = true;
         for (int col = 0; col < NUM_COLS; col++) {
-            if (grid->grid[row][col] == 0) {
+            GridNode* node = Grid_GetNode(grid, row, col);
+            if (!node || node->blockId == 0) {
                 full = false;
                 break;
             }
         }
         if (full) {
             rowsCleared++;
-            for (int r = row; r > 0; r--) {
-                for (int col = 0; col < NUM_COLS; col++) {
-                    grid->grid[r][col] = grid->grid[r - 1][col];
+            // Hapus semua node di baris ini
+            GridNode* current = grid->head;
+            GridNode* prev = NULL;
+            while (current) {
+                GridNode* next = current->next;
+                if (current->row == row) {
+                    if (prev) {
+                        prev->next = next;
+                    } else {
+                        grid->head = next;
+                    }
+                    if (next) {
+                        next->prev = prev;
+                    }
+                    free(current);
+                } else {
+                    prev = current;
                 }
+                current = next;
             }
-            for (int col = 0; col < NUM_COLS; col++) {
-                grid->grid[0][col] = 0;
+            // Geser baris di atas ke bawah
+            current = grid->head;
+            while (current) {
+                if (current->row < row) {
+                    current->row++;
+                }
+                current = current->next;
             }
-            row++;
+            row++; // Periksa baris yang sama lagi setelah penggeseran
         }
     }
     return ApplyComboScore(rowsCleared, combo);
@@ -64,7 +89,15 @@ int ApplyComboScore(int rowsCleared, int *combo) {
     return 0;
 }
 
-void ResetGame(Grid *grid, Block *currentBlock, Block *nextBlocks, int *score, int *combo) {
+void ResetGame(Grid *grid, Block *currentBlock, Block *nextBlocks, int *score, int *combo, Block *holdBlock, bool *hasHeld ) {
+    // Hapus semua node di linked list
+    GridNode* current = grid->head;
+    while (current) {
+        GridNode* next = current->next;
+        free(current);
+        current = next;
+    }
+    grid->head = NULL;
     Grid_Init(grid);
     Block_Init(currentBlock);
     for (int i = 0; i < 3; i++) {
@@ -72,6 +105,8 @@ void ResetGame(Grid *grid, Block *currentBlock, Block *nextBlocks, int *score, i
     }
     *score = 0;
     *combo = 0;
+    holdBlock->id = -1; // Reset holdBlock
+    *hasHeld = false; // Reset hasHeld
 }
 
 bool HandleGameOver() {
@@ -83,7 +118,7 @@ bool HandleGameOver() {
         ClearBackground(RAYWHITE);
   
         int textGameOverX = (screenWidth - MeasureText("GAME OVER", 40)) / 2 + 30;
-        int textGameOverY = 200;  // Bisa atur sedikit kalau kurang pas
+        int textGameOverY = 200;
         DrawText("GAME OVER", textGameOverX, textGameOverY, 40, RED);
 
         int buttonWidth = 220, buttonHeight = 50;
