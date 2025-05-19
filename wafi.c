@@ -17,7 +17,11 @@ void Block_Init(Block *block) {
     block->row = startY;
     block->col = startX;
     block->blockType = "ILJOSTZ"[block->id];
+    block->position = (Vector2){4,0}; //Mulai dari atas tengah grid
 
+    for (int i = 0; i < 4; i++) {
+        block->blocks[i] = (Vector2){0, 0};
+    }
     switch (block->id) {
         case 0: block->texture = LoadTexture("Assets/Block_I.png"); break;
         case 1: block->texture = LoadTexture("Assets/Block_L.png"); break;
@@ -27,10 +31,67 @@ void Block_Init(Block *block) {
         case 5: block->texture = LoadTexture("Assets/Block_T.png"); break;
         case 6: block->texture = LoadTexture("Assets/Block_Z.png"); break;
     }
+    switch (block->id) 
+    {
+    case 0: // I
+        block->blocks[0] = (Vector2) {0,0};
+        block->blocks[1] = (Vector2) {1,0};
+        block->blocks[2] = (Vector2) {2,0};
+        block->blocks[3] = (Vector2) {3,0};
+        block->center = (Vector2) {0,1.5f}; // Pusat rotasinya
+        break;
+    
+    case 1: // O
+        block->blocks[0] = (Vector2) {0,0};
+        block->blocks[1] = (Vector2) {1,0};
+        block->blocks[2] = (Vector2) {0,1};
+        block->blocks[3] = (Vector2) {1,1};
+        block->center = (Vector2) {0.5f,0.5f}; // Pusat rotasinya
+        break;
 
+    case 2: //T
+        block->blocks[0] = (Vector2) {1,0};
+        block->blocks[1] = (Vector2) {0,1};
+        block->blocks[2] = (Vector2) {1,1};
+        block->blocks[3] = (Vector2) {2,1};
+        block->center = (Vector2) {1,1}; // Pusat rotasinya
+        break;
+
+    case 3: //S
+        block->blocks[0] = (Vector2) {1,0};
+        block->blocks[1] = (Vector2) {2,0};
+        block->blocks[2] = (Vector2) {0,1};
+        block->blocks[3] = (Vector2) {1,1};
+        block->center = (Vector2) {0.5f,0.5f}; // Pusat rotasinya
+        break;
+        
+    case 4: // Z
+        block->blocks[0] = (Vector2) {0,0};
+        block->blocks[1] = (Vector2) {1,0};
+        block->blocks[2] = (Vector2) {0,1};
+        block->blocks[3] = (Vector2) {1,1};
+        block->center = (Vector2) {1.5f,0.5f}; // Pusat rotasinya
+        break;
+
+    case 5: // J
+        block->blocks[0] = (Vector2) {0,0};
+        block->blocks[1] = (Vector2) {0,1};
+        block->blocks[2] = (Vector2) {1,1};
+        block->blocks[3] = (Vector2) {2,1};
+        block->center = (Vector2) {1,1}; // Pusat rotasinya
+        break;
+
+    case 6: // L
+        block->blocks[0] = (Vector2) {0,0};
+        block->blocks[1] = (Vector2) {0,1};
+        block->blocks[2] = (Vector2) {1,1};
+        block->blocks[3] = (Vector2) {2,1};
+        block->center = (Vector2) {1,1}; // Pusat rotasinya
+        break;
+    }
     int tetrominoConfigs[7][4][4][2] = {
-        {{{0,0}, {0,1}, {0,2}, {0,3}}, {{0,0}, {1,0}, {2,0}, {3,0}}, {{0,0}, {0,1}, {0,2}, {0,3}}, {{0,0}, {1,0}, {2,0}, {3,0}}},
-        {{{0,0}, {1,0}, {2,0}, {2,1}}, {{0,1}, {0,0}, {0,2}, {1,2}}, {{0,0}, {0,1}, {1,0}, {2,0}}, {{0,0}, {1,0}, {1,1}, {1,2}}},
+        {{{0,0}, {0,1}, {0,2}, {0,3}}, {{0,0}, {1,0}, {2,0}, {3,0}}, {{0,0}, {0,1}, {0,2}, {0,3}}, {{0,0}, {1,0}, {2,0}, {3,0}}}, // I bentuk rotasi 0 - 270 setiap {}
+        {{{0,0}, {1,0}, {2,0}, {2,1}}, {{0,1}, {0,0}, {0,2}, {1,2}}, {{0,0}, {0,1}, {1,0}, {2,0}}, {{0,0}, {1,0}, {1,1}, {1,2}}}, // 
         {{{0,1}, {1,1}, {2,1}, {2,0}}, {{0,0}, {0,1}, {0,2}, {1,0}}, {{0,1}, {0,0}, {1,1}, {2,1}}, {{0,2}, {1,0}, {1,1}, {1,2}}},
         {{{0,0}, {0,1}, {1,0}, {1,1}}, {{0,0}, {0,1}, {1,0}, {1,1}}, {{0,0}, {0,1}, {1,0}, {1,1}}, {{0,0}, {0,1}, {1,0}, {1,1}}},
         {{{0,1}, {0,2}, {1,0}, {1,1}}, {{0,0}, {1,0}, {1,1}, {2,1}}, {{0,1}, {0,2}, {1,0}, {1,1}}, {{0,0}, {1,0}, {1,1}, {2,1}}},
@@ -171,6 +232,7 @@ void Grid_Draw(Grid *grid, int offsetX, int offsetY) {
     }
 }
 
+
 int IsValidPosition(Block *block, Grid *grid) {
     for (int i = 0; i < 4; i++) {
         int row = block->cells[block->rotationState][i].row + block->row;
@@ -185,3 +247,4 @@ int IsValidPosition(Block *block, Grid *grid) {
     }
     return 1;
 }
+

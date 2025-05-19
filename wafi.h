@@ -2,7 +2,7 @@
 #define WAFI_H
 
 #include <raylib.h>
-
+#include <stdbool.h>
 #define NUM_ROWS 20
 #define NUM_COLS 10
 
@@ -21,6 +21,9 @@ typedef struct {
     Texture2D texture;
     int row; // Posisi absolut baris
     int col; // Posisi absolut kolom
+    Vector2 blocks[4]; // Koordinat relatif 4 blok
+    Vector2 position; //  Posisi absolut di grid
+    Vector2 center; // Pusat rotasi relatif terhadap blocks (tambahan baru)
 } Block;
 
 typedef struct GridNode {
@@ -35,6 +38,7 @@ typedef struct {
     GridNode* head; // Pointer ke node pertama
     int cellSize;
     Texture2D blockTextures[7];
+    int cells[20][10];
 } Grid;
 
 typedef struct {

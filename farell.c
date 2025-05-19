@@ -30,8 +30,45 @@ void rotateBlock(Block *block, Grid *grid) {
     int originalRotation = block->rotationState;
     int originalRow = block->row;
     int originalCol = block->col;
-
+    bool collision; // Pindahkan deklarasi di luar loop
+    Vector2 newBlocks[4]; // Deklarasi array lokal
+    bool isVertical;
     block->rotationState = nextRotation;
+
+    for (int i = 0; i < 4; i++) {
+        float x = block->blocks[i].x - block->center.x;
+        float y = block->blocks[i].y - block->center.y;
+        newBlocks[i].x = -y + block->center.x; // Rotasi 90 derajat berlawanan arah
+        newBlocks[i].y = x + block->center.y;
+    }
+
+    collision = false;
+    for (int i = 0; i < 4; i++) {
+        int gridX = (int)(block->position.x + newBlocks[i].x);
+        int gridY = (int)(block->position.y + newBlocks[i].y);
+        if (gridX < 0 || gridX >= 10 || gridY >= 20 || (gridY >= 0 && grid->cells[gridY][gridX] != 0)) {
+            collision = true;
+            break;
+        }
+    }
+
+    if (!collision) {
+        for (int i = 0; i < 4; i++) {
+            block->blocks[i] = newBlocks[i];
+        }
+        // Penyesuaian posisi khusus untuk I
+        if (block->id == 0) {
+            if (isVertical) { // Vertikal ke Horizontal
+                block->position.x -= 1.5f; // Geser ke kiri
+                block->position.y += 1.5f; // Geser ke bawah
+                block->center = (Vector2){1.5f, 0}; // Ubah pusat rotasi untuk posisi horizontal
+            } else { // Horizontal ke Vertikal
+                block->position.x += 1.5f; // Geser ke kanan
+                block->position.y -= 1.5f; // Geser ke atas
+                block->center = (Vector2){0, 1.5f}; // Kembali ke pusat rotasi vertikal
+            }
+        }
+    }
 
     WallKickOffset wallKickOffsets[5];
     if (block->blockType != 'O') {
