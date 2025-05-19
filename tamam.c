@@ -12,9 +12,8 @@ float volume = 0.5f;
 Music bgm;
 Texture2D background;
 
-MenuList menuList; // VARIABEL GLOBAL MENU
+MenuList menuList; 
 
-// ===== IMPLEMENTASI SLL =====
 void InitMenu(MenuList *list) {
     list->head = NULL;
     list->count = 0;
@@ -61,7 +60,7 @@ void InitMenuOptions() {
     AddMenuOption(&menuList, "Settings");
     AddMenuOption(&menuList, "Exit");
 }
-// ============================
+
 
 void InitAudioResources() {
     bgm = LoadMusicStream("Assets/BGM2.mp3");
