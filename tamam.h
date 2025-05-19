@@ -3,7 +3,6 @@
 
 #include "raylib.h"
 
-// ENUM untuk state game
 typedef enum {
     MENU,
     SETTINGS,
@@ -11,14 +10,12 @@ typedef enum {
     EXIT
 } GameState;
 
-// Variabel global
 extern GameState currentScreen;
 extern int selectedOption;
 extern float volume;
 extern Music bgm;
 extern Texture2D background;
 
-// ======== LINKED LIST UNTUK MENU ========
 typedef struct MenuNode {
     const char *option;
     struct MenuNode *next;
@@ -29,13 +26,13 @@ typedef struct {
     int count;
 } MenuList;
 
-extern MenuList menuList;              // akses menu dari main.c
-void InitMenuOptions();                // inisialisasi menu linked list
+extern MenuList menuList;              
+void InitMenuOptions();                
 void InitMenu(MenuList *list);
 void AddMenuOption(MenuList *list, const char *option);
 const char* GetMenuOption(MenuList *list, int index);
 void FreeMenu(MenuList *list);
-// ========================================
+
 
 void InitAudioResources();
 void UnloadAudioResources();
