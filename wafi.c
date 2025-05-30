@@ -31,13 +31,14 @@ void Block_Init(Block *block) {
         case 5: block->texture = LoadTexture("Assets/Block_T.png"); break;
         case 6: block->texture = LoadTexture("Assets/Block_Z.png"); break;
     }
+    
     switch (block->id) 
     {
     case 0: // I
         block->blocks[0] = (Vector2) {0,0};
-        block->blocks[1] = (Vector2) {1,0};
-        block->blocks[2] = (Vector2) {2,0};
-        block->blocks[3] = (Vector2) {3,0};
+        block->blocks[1] = (Vector2) {0,1};
+        block->blocks[2] = (Vector2) {0,2};
+        block->blocks[3] = (Vector2) {0,3};
         block->center = (Vector2) {0,1.5f}; // Pusat rotasinya
         break;
     
@@ -90,12 +91,25 @@ void Block_Init(Block *block) {
         break;
     }
     int tetrominoConfigs[7][4][4][2] = {
-        {{{0,0}, {0,1}, {0,2}, {0,3}}, {{0,0}, {1,0}, {2,0}, {3,0}}, {{0,0}, {0,1}, {0,2}, {0,3}}, {{0,0}, {1,0}, {2,0}, {3,0}}}, // I bentuk rotasi 0 - 270 setiap {}
-        {{{0,0}, {1,0}, {2,0}, {2,1}}, {{0,1}, {0,0}, {0,2}, {1,2}}, {{0,0}, {0,1}, {1,0}, {2,0}}, {{0,0}, {1,0}, {1,1}, {1,2}}}, // 
+        // Ini merupakan representasi bentuk I
+        {{{1,0}, {1,1}, {1,2}, {1,3}}, {{0,2}, {1,2}, {2,2}, {3,2}}, {{2,0}, {2,1}, {2,2}, {2,3}}, {{0,1}, {1,1}, {2,1}, {3,1}}},
+
+        // Ini merupakan representasi bentuk I
+        {{{0,0}, {1,0}, {2,0}, {2,1}}, {{0,1}, {0,0}, {0,2}, {1,2}}, {{0,0}, {0,1}, {1,0}, {2,0}}, {{0,0}, {1,0}, {1,1}, {1,2}}},
+
+        // Ini merupakan representasi bentuk I
         {{{0,1}, {1,1}, {2,1}, {2,0}}, {{0,0}, {0,1}, {0,2}, {1,0}}, {{0,1}, {0,0}, {1,1}, {2,1}}, {{0,2}, {1,0}, {1,1}, {1,2}}},
+
+        // Ini merupakan representasi bentuk I
         {{{0,0}, {0,1}, {1,0}, {1,1}}, {{0,0}, {0,1}, {1,0}, {1,1}}, {{0,0}, {0,1}, {1,0}, {1,1}}, {{0,0}, {0,1}, {1,0}, {1,1}}},
+
+        // Ini merupakan representasi bentuk I
         {{{0,1}, {0,2}, {1,0}, {1,1}}, {{0,0}, {1,0}, {1,1}, {2,1}}, {{0,1}, {0,2}, {1,0}, {1,1}}, {{0,0}, {1,0}, {1,1}, {2,1}}},
+
+        // Ini merupakan representasi bentuk I
         {{{0,1}, {1,0}, {1,1}, {1,2}}, {{0,0}, {1,0}, {1,1}, {2,0}}, {{0,0}, {0,1}, {0,2}, {1,1}}, {{0,1}, {1,0}, {1,1}, {2,1}}},
+
+        // Ini merupakan representasi bentuk I
         {{{0,0}, {0,1}, {1,1}, {1,2}}, {{0,1}, {1,0}, {1,1}, {2,0}}, {{0,0}, {0,1}, {1,1}, {1,2}}, {{0,1}, {1,0}, {1,1}, {2,0}}}
     };
 
