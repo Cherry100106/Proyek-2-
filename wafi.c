@@ -90,6 +90,7 @@ void Block_Init(Block *block) {
         block->center = (Vector2) {1,1}; // Pusat rotasinya
         break;
     }
+    
     int tetrominoConfigs[7][4][4][2] = {
         // Ini merupakan representasi bentuk I
         {{{1,0}, {1,1}, {1,2}, {1,3}}, {{0,2}, {1,2}, {2,2}, {3,2}}, {{2,0}, {2,1}, {2,2}, {2,3}}, {{0,1}, {1,1}, {2,1}, {3,1}}},

@@ -32,7 +32,7 @@ void rotateBlock(Block *block, Grid *grid) {
     int originalCol = block->col;
     bool collision; // Pindahkan deklarasi di luar loop
     Vector2 newBlocks[4]; // Deklarasi array lokal
-    bool isVertical;
+    bool isVertical = (block->blocks[0].x == block->blocks[1].x); // Cek apakah vertikal
     block->rotationState = nextRotation;
 
     for (int i = 0; i < 4; i++) {

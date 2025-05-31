@@ -13,7 +13,7 @@ int main() {
     InitAudioDevice();
     srand(time(NULL));
 
-    Texture2D background = LoadTexture("Assets/Background.png");
+    Texture2D background = LoadTexture("Assets/Background2.jpg");
     Texture2D frameTexture = LoadTexture("Assets/Frame10.png");
     Texture2D papanScore = LoadTexture("Assets/papanScore1.png");
 
