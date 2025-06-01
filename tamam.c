@@ -1,23 +1,66 @@
 #include "tamam.h"
-
 #include "raylib.h"
+#include <stdlib.h>
+#include <string.h>
 
 #define SCREEN_WIDTH 550
 #define SCREEN_HEIGHT 600
-
 
 GameState currentScreen = MENU;
 int selectedOption = 0;
 float volume = 0.5f;
 Music bgm;
-Texture2D background; 
+Texture2D background;
 
-const char *menuOptions[] = {
-    "Play",
-    "Settings",
-    "Exit"
-};
-const int totalOptions = 3;
+MenuList menuList; 
+
+void InitMenu(MenuList *list) {
+    list->head = NULL;
+    list->count = 0;
+}
+
+void AddMenuOption(MenuList *list, const char *option) {
+    MenuNode *newNode = (MenuNode *)malloc(sizeof(MenuNode));
+    newNode->option = option;
+    newNode->next = NULL;
+
+    if (list->head == NULL) {
+        list->head = newNode;
+    } else {
+        MenuNode *temp = list->head;
+        while (temp->next != NULL)
+            temp = temp->next;
+        temp->next = newNode;
+    }
+    list->count++;
+}
+
+const char* GetMenuOption(MenuList *list, int index) {
+    if (index < 0 || index >= list->count) return NULL;
+    MenuNode *temp = list->head;
+    for (int i = 0; i < index; i++)
+        temp = temp->next;
+    return temp->option;
+}
+
+void FreeMenu(MenuList *list) {
+    MenuNode *temp = list->head;
+    while (temp != NULL) {
+        MenuNode *toDelete = temp;
+        temp = temp->next;
+        free(toDelete);
+    }
+    list->head = NULL;
+    list->count = 0;
+}
+
+void InitMenuOptions() {
+    InitMenu(&menuList);
+    AddMenuOption(&menuList, "Play");
+    AddMenuOption(&menuList, "Settings");
+    AddMenuOption(&menuList, "Exit");
+}
+
 
 void InitAudioResources() {
     bgm = LoadMusicStream("Assets/BGM2.mp3");
@@ -32,6 +75,7 @@ void UnloadAudioResources() {
 void InitBackground() {
     background = LoadTexture("Assets/Lobby.jpg");
 }
+
 void UnloadBackground() {
     UnloadTexture(background);
 }
@@ -39,7 +83,7 @@ void UnloadBackground() {
 void DrawBackground() {
     float scaleX = (float)SCREEN_WIDTH / background.width;
     float scaleY = (float)SCREEN_HEIGHT / background.height;
-    float scale = (scaleX > scaleY) ? scaleX : scaleY; 
+    float scale = (scaleX > scaleY) ? scaleX : scaleY;
 
     Rectangle source = { 0, 0, background.width, background.height };
     Rectangle dest = { 0, 0, background.width * scale, background.height * scale };
@@ -57,9 +101,11 @@ void DrawMenu() {
     DrawBackground();
     DrawCenteredText("TETRIS", 100, 60, WHITE);
 
-    for (int i = 0; i < totalOptions; i++) {
+    for (int i = 0; i < menuList.count; i++) {
         Color color = (i == selectedOption) ? GREEN : WHITE;
-        DrawCenteredText(menuOptions[i], 200 + (i * 60), 40, color);
+        const char *text = GetMenuOption(&menuList, i);
+        if (text != NULL)
+            DrawCenteredText(text, 200 + (i * 60), 40, color);
     }
 }
 
@@ -67,7 +113,7 @@ void DrawSettings() {
     DrawBackground();
     DrawCenteredText("Settings", 100, 60, WHITE);
     DrawCenteredText("Volume", 200, 40, WHITE);
-    
+
     DrawRectangle((SCREEN_WIDTH - 200) / 2, 250, 200, 10, WHITE);
     DrawRectangle((SCREEN_WIDTH - 200) / 2, 250, (int)(volume * 200), 10, GREEN);
 
@@ -75,21 +121,25 @@ void DrawSettings() {
 }
 
 void HandleMenuInput() {
-    if (IsKeyPressed(KEY_UP)) selectedOption = (selectedOption - 1 + totalOptions) % totalOptions;
-    if (IsKeyPressed(KEY_DOWN)) selectedOption = (selectedOption + 1) % totalOptions;
+    int optCount = menuList.count;
+    if (IsKeyPressed(KEY_UP)) selectedOption = (selectedOption - 1 + optCount) % optCount;
+    if (IsKeyPressed(KEY_DOWN)) selectedOption = (selectedOption + 1) % optCount;
     if (IsKeyPressed(KEY_ENTER)) {
-        if (selectedOption == 0) currentScreen = PLAY;
-        else if (selectedOption == 1) currentScreen = SETTINGS;
-        else if (selectedOption == 2) currentScreen = EXIT;
+        const char *selected = GetMenuOption(&menuList, selectedOption);
+        if (selected != NULL) {
+            if (strcmp(selected, "Play") == 0) currentScreen = PLAY;
+            else if (strcmp(selected, "Settings") == 0) currentScreen = SETTINGS;
+            else if (strcmp(selected, "Exit") == 0) currentScreen = EXIT;
+        }
     }
 }
 
 void HandleSettingsInput() {
-    if (IsKeyDown(KEY_RIGHT)) volume += 0.06f; // kalau kurang berasa volume, gantinya disini
+    if (IsKeyDown(KEY_RIGHT)) volume += 0.06f;
     if (IsKeyDown(KEY_LEFT)) volume -= 0.06f;
     if (IsKeyPressed(KEY_W) || IsKeyPressed(KEY_ESCAPE)) currentScreen = MENU;
 
-    if (volume > 1.0f) volume = 1.0f; // ini buat maksimalnya, bisa edit disini
+    if (volume > 1.0f) volume = 1.0f;
     if (volume < 0.0f) volume = 0.0f;
 
     SetMusicVolume(bgm, volume);
