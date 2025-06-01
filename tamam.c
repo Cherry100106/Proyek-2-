@@ -73,7 +73,7 @@ void UnloadAudioResources() {
 }
 
 void InitBackground() {
-    background = LoadTexture("Assets/Lobby.jpg");
+    background = LoadTexture("Assets/Background2.jpg");
 }
 
 void UnloadBackground() {
